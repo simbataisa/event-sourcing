@@ -1,0 +1,57 @@
+syntax = "proto3";
+
+import "google/api/annotations.proto";
+import "google/protobuf/empty.proto";
+
+option java_multiple_files = true;
+option java_package = "com.example.eventstorecommand.grpc";
+option java_outer_classname = "BoardCommandProto";
+
+package model;
+
+service BoardCommandService {
+    //    rpc CreateBoard(CreateBoardRequest) returns (CreateBoardResponse){}
+    rpc CreateBoard (google.protobuf.Empty) returns (CreateBoardResponse) {
+        option (google.api.http) = {
+            post: "/v1/boards"
+            body: "*"
+        };
+    }
+
+    rpc RenameBoard (RenameBoardRequest) returns (RenameBoardResponse) {
+    }
+}
+
+message CreateBoardRequest {
+
+}
+
+message CreateBoardResponse {
+    string boardUuid = 1;
+}
+
+message RenameBoardRequest {
+    string boardUuid = 1;
+    string boardName = 2;
+}
+
+message RenameBoardResponse {
+    Board board = 1;
+}
+
+message Story {
+    string name = 1;
+}
+
+message DomainEvent {
+    string boardUuid = 1;
+    string when = 2; //Instant Epoch Milliseconds
+}
+
+message Board {
+    string boardUuid = 1;
+    string name = 2;
+    map<string, Story> stories = 3;
+    repeated DomainEvent changes = 4;
+}
+
