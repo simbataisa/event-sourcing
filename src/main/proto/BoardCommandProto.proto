@@ -4,7 +4,7 @@ import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 option java_multiple_files = true;
-option java_package = "com.example.eventstorecommand.grpc";
+option java_package = "com.example.eventstore.command.grpc";
 option java_outer_classname = "BoardCommandProto";
 
 package model;
@@ -54,4 +54,3 @@ message Board {
     map<string, Story> stories = 3;
     repeated DomainEvent changes = 4;
 }
-

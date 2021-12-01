@@ -1,22 +1,20 @@
 package com.example.eventstorecommand;
 
-import com.example.eventstorecommand.grpc.BoardCommandServiceGrpc;
-import com.example.eventstorecommand.grpc.CreateBoardRequest;
-import com.example.eventstorecommand.grpc.CreateBoardResponse;
-import com.example.eventstorecommand.grpc.RenameBoardRequest;
-import com.example.eventstorecommand.grpc.RenameBoardResponse;
+import com.example.eventstore.command.grpc.BoardCommandServiceGrpc;
+import com.example.eventstore.command.grpc.CreateBoardResponse;
+import com.example.eventstore.command.grpc.RenameBoardRequest;
+import com.example.eventstore.command.grpc.RenameBoardResponse;
 import com.google.protobuf.Empty;
 import lombok.extern.slf4j.Slf4j;
-import org.junit.Assert;
 import org.junit.Rule;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.cloud.contract.wiremock.AutoConfigureWireMock;
 import org.springframework.http.HttpStatus;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import java.util.UUID;
 import java.util.concurrent.ExecutionException;
@@ -27,7 +25,7 @@ import static com.github.tomakehurst.wiremock.client.WireMock.post;
 import static com.github.tomakehurst.wiremock.client.WireMock.stubFor;
 import static com.github.tomakehurst.wiremock.client.WireMock.urlEqualTo;
 
-@ExtendWith(SpringExtension.class)
+@Disabled
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT,
     properties = {"grpc.enableReflection=true", "grpc.port=0", "grpc.shutdownGrace=5", "eureka.client.enabled=false"})
 @AutoConfigureWireMock(port = 0)
@@ -50,9 +48,9 @@ class EventStoreCommandApplicationTests extends GrpcServerTestBase {
     CreateBoardResponse createBoardResponse = BoardCommandServiceGrpc.newFutureStub(channel)
                                                                      .createBoard(Empty.newBuilder().build()).get();
 
-    Assert.assertNotNull(createBoardResponse);
+    Assertions.assertNotNull(createBoardResponse);
     log.info("BoardUuid {}", createBoardResponse.getBoardUuid());
-    Assert.assertNotNull(createBoardResponse.getBoardUuid());
+    Assertions.assertNotNull(createBoardResponse.getBoardUuid());
   }
 
   @Test
@@ -76,11 +74,12 @@ class EventStoreCommandApplicationTests extends GrpcServerTestBase {
 
     RenameBoardResponse renameBoardResponse = BoardCommandServiceGrpc.newFutureStub(channel)
                                                                      .renameBoard(
-                                                                         RenameBoardRequest.newBuilder().setBoardUuid(boardUuid)
-                                                                                           .setBoardName("Name Changed")
-                                                                                           .build()).get();
-    Assert.assertNotNull(renameBoardResponse);
+                                                                         RenameBoardRequest
+                                                                             .newBuilder().setBoardUuid(boardUuid)
+                                                                             .setBoardName("Name Changed")
+                                                                             .build()).get();
+    Assertions.assertNotNull(renameBoardResponse);
     log.info(renameBoardResponse.getBoard().toString());
-    Assert.assertEquals(boardUuid, renameBoardResponse.getBoard().getBoardUuid());
+    Assertions.assertEquals(boardUuid, renameBoardResponse.getBoard().getBoardUuid());
   }
 }
