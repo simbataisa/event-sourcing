@@ -6,11 +6,8 @@ plugins {
   id "java"
 }
 
-apply plugin: "com.google.protobuf"
-apply plugin: "java"
 apply plugin: "io.spring.dependency-management"
 
-group = projectGroupId
 version = "0.0.1-SNAPSHOT"
 sourceCompatibility = JavaVersion.VERSION_11
 
@@ -34,81 +31,7 @@ ext {
 }
 
 dependencies {
-  implementation "org.springframework.boot:spring-boot-starter-actuator"
-  implementation "org.springframework.boot:spring-boot-starter-security"
-  implementation "org.springframework.boot:spring-boot-starter-web"
-  implementation "org.springframework.boot:spring-boot-starter-webflux"
 
-  implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
-  implementation "org.springframework.cloud:spring-cloud-starter-loadbalancer"
-  implementation "org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j"
-  implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
-  implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
-  implementation "org.springframework.cloud:spring-cloud-stream"
-  implementation "org.springframework.cloud:spring-cloud-stream-binder-kafka"
-  implementation "org.springframework.cloud:spring-cloud-stream-binder-kafka-streams"
-  implementation 'org.springframework.kafka:spring-kafka:2.7.6'
-  implementation 'org.apache.kafka:kafka-streams:3.0.0'
-  implementation "org.apache.kafka:kafka-clients:3.0.0"
-
-
-  /*implementation "org.apache.camel:camel-spring-boot-starter:${apacheCamelVersion}"
-  implementation "org.apache.camel:camel-kafka:${apacheCamelVersion}"
-  implementation "org.apache.camel:camel-endpointdsl:${apacheCamelDslVersion}"
-  implementation "org.apache.camel:camel-componentdsl:${apacheCamelDslVersion}"
-  implementation "org.apache.camel:camel-jackson-starter:${apacheCamelVersion}"*/
-  implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camelVersion}"
-  implementation "org.apache.camel.springboot:camel-servlet-starter:${camelVersion}"
-  implementation "org.apache.camel.springboot:camel-jackson-starter:${camelVersion}"
-  implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camelVersion}"
-  implementation "org.apache.camel.springboot:camel-groovy-starter:${camelVersion}"
-  implementation "org.apache.camel.springboot:camel-mock-starter:${camelVersion}"
-  implementation "org.apache.camel:camel-endpointdsl:${camelVersion}"
-  implementation "org.apache.camel:camel-kafka:${camelVersion}"
-  implementation "org.apache.camel:camel-test-spring-junit5:${camelVersion}"
-  
-  runtimeOnly "com.h2database:h2"
-  annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
-
-  compileOnly "org.projectlombok:lombok:${lombokVersion}"
-  annotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-
-  testCompileOnly "org.projectlombok:lombok:${lombokVersion}"
-  testAnnotationProcessor "org.projectlombok:lombok:${lombokVersion}"
-
-  testImplementation "io.projectreactor:reactor-test"
-  testImplementation "org.springframework.cloud:spring-cloud-stream-test-support"
-  testImplementation "org.springframework.kafka:spring-kafka-test"
-  testImplementation "org.springframework.restdocs:spring-restdocs-mockmvc"
-  testImplementation "org.springframework.security:spring-security-test"
-  testImplementation("org.springframework.boot:spring-boot-starter-test")
-
-  //
-  implementation "io.github.lognet:grpc-spring-boot-starter:4.5.10"
-  implementation "com.google.protobuf:protobuf-java:${protoBufCoreVersion}"
-  implementation "com.google.protobuf:protobuf-java-util:${protoBufCoreVersion}"
-  implementation "com.googlecode.protobuf-java-format:protobuf-java-format:1.4"
-  implementation "com.google.api.grpc:proto-google-common-protos:${protoGoogleCommonVersion}"
-  implementation "io.grpc:grpc-stub:${protocGenGrpcVersion}"
-  implementation "io.grpc:grpc-protobuf:${protocGenGrpcVersion}"
-  implementation "io.grpc:grpc-services:${protocGenGrpcVersion}"
-  implementation "io.grpc:grpc-netty:${protocGenGrpcVersion}"
-  implementation "io.grpc:grpc-protobuf:${protocGenGrpcVersion}"
-  implementation group: "io.zipkin.brave", name: "brave-instrumentation-grpc", version: "5.10.0"
-
-  //
-  implementation "com.fasterxml.jackson.module:jackson-module-parameter-names:${jacksonVersion}"
-  implementation "com.fasterxml.jackson.datatype:jackson-datatype-jdk8:${jacksonVersion}"
-  implementation "com.fasterxml.jackson.datatype:jackson-datatype-jsr310:${jacksonVersion}"
-  implementation "org.modelmapper:modelmapper:2.4.2"
-  implementation "io.vavr:vavr:0.9.2"
-  
-  // Testing
-  testImplementation("org.springframework.cloud:spring-cloud-contract-wiremock:2.2.1.RELEASE") {
-    exclude group: "io.grpc", module: "grpc-services"
-    exclude group: "io.grpc", module: "grpc-netty"
-    exclude group: "org.springframework.boot", module: "spring-boot-starter"
-  }
 }
 
 dependencyManagement {
@@ -127,35 +50,20 @@ asciidoctor {
   dependsOn test
 }
 
-sourceSets {
-  main {
-    java {
-      srcDirs "src/main/java"
-      srcDirs "src/generated/proto/main/grpc"
-      srcDirs "src/generated/proto/main/java"
-    }
+jar.enabled = false
+bootJar.enabled = false
+
+subprojects {
+  group "${projectGroupId}"
+
+  sourceCompatibility = JavaVersion.VERSION_11
+  targetCompatibility = JavaVersion.VERSION_11
+
+  repositories {
+    mavenLocal()
+    mavenCentral()
   }
 }
 
-protobuf {
-  protoc {
-    artifact = "com.google.protobuf:protoc:${protoBufCoreVersion}"
-  }
-  plugins {
-    grpc {
-      artifact = "io.grpc:protoc-gen-grpc-java:${protocGenGrpcVersion}"
-    }
-  }
-  generateProtoTasks.generatedFilesBaseDir = 'src/generated/proto'
-
-  generateProtoTasks {
-    all().each { task ->
-      task.plugins {
-        grpc {}
-      }
-      task.generateDescriptorSet = true
-      task.descriptorSetOptions.includeImports = true
-      task.descriptorSetOptions.includeSourceInfo = true
-    }
-  }
-}
+bootJar.enabled = false
+jar.enabled = true
