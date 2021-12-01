@@ -1,6 +1,7 @@
 package com.example.eventstore.command.endpoint;
 
 import com.example.eventstore.command.service.BoardService;
+import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.util.UriComponentsBuilder;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -25,7 +27,7 @@ import java.util.UUID;
 @RequestMapping("/my-event-store-command")
 public class CommandsController {
 
-  private final BoardService<Board> service;
+  private final BoardService<Board, DomainEvent> service;
 
   @PostMapping("/boards")
   public ResponseEntity createBoard(final UriComponentsBuilder uriComponentsBuilder) {
@@ -46,6 +48,11 @@ public class CommandsController {
     log.info("boardUuid {}", boardUuid);
     final Board board = this.service.getBoard(boardUuid);
     return ResponseEntity.of(Optional.of(board));
+  }
+
+  @GetMapping("/boards/{boardUuid}/events")
+  public ResponseEntity<List<DomainEvent>> getEvents(@PathVariable("boardUuid") UUID boardUuid) {
+    return ResponseEntity.of(Optional.of(this.service.getBoardEvents(boardUuid)));
   }
 
   @PatchMapping("/boards/{boardUuid}")

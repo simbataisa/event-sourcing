@@ -1,12 +1,15 @@
 package com.example.eventstore.command.service;
 
+import java.util.List;
 import java.util.UUID;
 
-public interface BoardService<T> {
+public interface BoardService<T, E> {
 
   UUID createBoard();
 
   T getBoard(final UUID boardUuid);
+
+  List<E> getBoardEvents(final UUID boardUuid);
 
   T renameBoard(final UUID boardUuid, final String name);
 

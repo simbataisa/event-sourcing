@@ -27,6 +27,7 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.Properties;
 
+import static com.example.eventstore.config.KafkaConfig.AGGREGATION_SNAPSHOT_VIEW;
 import static com.example.eventstore.config.KafkaConfig.NOTIFICATION_TOPIC;
 import static com.example.eventstore.config.KafkaConfig.SNAPSHOT_TOPIC;
 
@@ -40,6 +41,7 @@ public class BoardEventNotificationKStreamProducerService implements DisposableB
   private static final String CLIENT_ID = "my-event-store-command-event-processor";
   private static final String BROKER = "localhost:9092";
   private static final String IN_TOPIC = NOTIFICATION_TOPIC;
+  private static final String MATERIALIZED_VIEW = AGGREGATION_SNAPSHOT_VIEW;
   private static final String OUT_TOPIC = SNAPSHOT_TOPIC;
   private final KafkaStreams streams;
 
@@ -53,13 +55,14 @@ public class BoardEventNotificationKStreamProducerService implements DisposableB
       ObjectMapper objectMapper,
       KafkaAdmin kafkaAdmin,
       NewTopic notificationTopic,
-      NewTopic snapshotTopic
+      NewTopic snapshotTopic,
+      NewTopic aggregationTopic
   ) {
     this.objectMapper = objectMapper;
     this.domainEventSerde = new JsonSerde<>(DomainEvent.class, objectMapper);
     this.boardSerde = new JsonSerde<>(Board.class, objectMapper);
     this.kafkaAdmin = kafkaAdmin;
-    this.kafkaAdmin.createOrModifyTopics(notificationTopic, snapshotTopic);
+    this.kafkaAdmin.createOrModifyTopics(notificationTopic, snapshotTopic, aggregationTopic);
     // Configure the Streams application.
     final Properties streamsConfiguration = getStreamsConfiguration();
 
@@ -123,7 +126,7 @@ public class BoardEventNotificationKStreamProducerService implements DisposableB
             Board::new,
             (key, domainEvent, board) -> board.handleEvent(domainEvent),
             Materialized
-                .<String, Board, KeyValueStore<Bytes, byte[]>>as(OUT_TOPIC)
+                .<String, Board, KeyValueStore<Bytes, byte[]>>as(MATERIALIZED_VIEW)
                 .withKeySerde(Serdes.String())
                 .withValueSerde(boardSerde)
         );

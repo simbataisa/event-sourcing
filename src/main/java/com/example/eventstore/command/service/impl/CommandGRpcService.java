@@ -3,6 +3,7 @@ package com.example.eventstore.command.service.impl;
 import com.example.eventstore.command.grpc.Board;
 import com.example.eventstore.command.grpc.BoardCommandServiceGrpc;
 import com.example.eventstore.command.grpc.CreateBoardResponse;
+import com.example.eventstore.command.grpc.DomainEvent;
 import com.example.eventstore.command.grpc.RenameBoardRequest;
 import com.example.eventstore.command.grpc.RenameBoardResponse;
 import com.example.eventstore.command.grpc.Story;
@@ -14,11 +15,12 @@ import org.lognet.springboot.grpc.GRpcService;
 import org.modelmapper.ModelMapper;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @GRpcService
-public class CommandGRpcService extends BoardCommandServiceGrpc.BoardCommandServiceImplBase implements BoardService<Board>{
+public class CommandGRpcService extends BoardCommandServiceGrpc.BoardCommandServiceImplBase implements BoardService<Board, DomainEvent>{
   
   @Override
   public void createBoard(Empty request, StreamObserver<CreateBoardResponse> responseObserver) {
@@ -59,6 +61,11 @@ public class CommandGRpcService extends BoardCommandServiceGrpc.BoardCommandServ
 
   @Override
   public Board getBoard(UUID boardUuid) {
+    return null;  // TODO impl
+  }
+
+  @Override
+  public List<DomainEvent> getBoardEvents(UUID boardUuid) {
     return null;  // TODO impl
   }
 

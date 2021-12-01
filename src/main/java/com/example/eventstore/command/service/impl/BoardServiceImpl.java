@@ -2,20 +2,23 @@ package com.example.eventstore.command.service.impl;
 
 import com.example.eventstore.command.client.BoardClient;
 import com.example.eventstore.command.service.BoardService;
+import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-//@Profile(value = {"default", "event-store", "kafka", "camel-kafka"})
+@Profile(value = {"default", "event-store", "kafka", "camel-kafka"})
 @Service
-public class BoardServiceImpl implements BoardService<Board> {
+public class BoardServiceImpl implements BoardService<Board, DomainEvent> {
 
-  private final BoardClient<Board> client;
+  private final BoardClient<Board, DomainEvent> client;
 
   public UUID createBoard() {
     log.debug("createBoard : enter");
@@ -29,6 +32,11 @@ public class BoardServiceImpl implements BoardService<Board> {
   public Board getBoard(final UUID boardUuid) {
     log.debug("getBoard : enter");
     return this.client.find(boardUuid);
+  }
+
+  @Override
+  public List<DomainEvent> getBoardEvents(UUID boardUuid) {
+    return this.client.getEvents(boardUuid);
   }
 
   public Board renameBoard(final UUID boardUuid, final String name) {

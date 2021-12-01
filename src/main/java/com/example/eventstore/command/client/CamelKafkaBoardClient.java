@@ -20,18 +20,19 @@ import java.util.UUID;
 
 import static com.example.eventstore.command.client.camel.service.BoardEventNotificationPublishService.ROUTE_ID;
 import static com.example.eventstore.common.Constants.CAMEL_DIRECT_ROUTE_PREFIX;
-import static com.example.eventstore.config.KafkaConfig.SNAPSHOT_TOPIC;
+import static com.example.eventstore.config.KafkaConfig.AGGREGATION_SNAPSHOT_VIEW;
 
 
 @Slf4j
 @Profile(value = {"camel-kafka"})
 @Component
-public class CamelKafkaBoardClient implements BoardClient<Board> {
+public class CamelKafkaBoardClient implements BoardClient<Board, DomainEvent> {
 
   private final ProducerTemplate producerTemplate;
   private final CamelContext camelContext;
   private final ObjectMapper objectMapper;
   private final BoardEventNotificationKStreamProducerService boardEventNotificationKStreamProducerService;
+  private final ReadOnlyKeyValueStore<String, Board> store;
 
   public CamelKafkaBoardClient(
       CamelContext camelContext,
@@ -42,6 +43,9 @@ public class CamelKafkaBoardClient implements BoardClient<Board> {
     this.producerTemplate = camelContext.createProducerTemplate();
     this.objectMapper = objectMapper;
     this.boardEventNotificationKStreamProducerService = boardEventNotificationKStreamProducerService;
+    this.store = this.boardEventNotificationKStreamProducerService
+        .getStreams()
+        .store(StoreQueryParameters.fromNameAndType(AGGREGATION_SNAPSHOT_VIEW, QueryableStoreTypes.keyValueStore()));
   }
 
   @Override
@@ -68,16 +72,29 @@ public class CamelKafkaBoardClient implements BoardClient<Board> {
     log.debug("find : enter");
 
     try {
-      ReadOnlyKeyValueStore<String, Board> store = this.boardEventNotificationKStreamProducerService
-          .getStreams()
-          .store(StoreQueryParameters.fromNameAndType(SNAPSHOT_TOPIC, QueryableStoreTypes.keyValueStore()));
-
       final Board board = store.get(boardUuid.toString());
       if (null != board) {
         board.flushChanges();
         log.info("found : board=" + board);
         log.debug("find : exit");
         return board;
+
+      } else {
+        throw new IllegalArgumentException("board[" + boardUuid + "] not found!");
+      }
+
+    } catch (InvalidStateStoreException e) {
+      log.error("find : error", e);
+    }
+    throw new IllegalArgumentException("board[" + boardUuid.toString() + "] not found!");
+  }
+
+  @Override
+  public List<DomainEvent> getEvents(UUID boardUuid) {
+    try {
+      final Board board = store.get(boardUuid.toString());
+      if (null != board) {
+        return board.changes();
 
       } else {
         throw new IllegalArgumentException("board[" + boardUuid + "] not found!");

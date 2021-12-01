@@ -24,7 +24,7 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Profile(value = {"default", "event-store"})
 @Component
-public class EventStoreBoardClient implements BoardClient<Board> {
+public class EventStoreBoardClient implements BoardClient<Board, DomainEvent> {
 
   private static final String API_GW_SERVICE_NAME = "my-api-gateway";
   private static final String EVENT_STORE_SERVICE_BASE_PATH = "/my-event-store/boards";
@@ -66,6 +66,12 @@ public class EventStoreBoardClient implements BoardClient<Board> {
 
     log.info("find : exit");
     return board;
+  }
+
+  @Override
+  public List<DomainEvent> getEvents(UUID boardUuid) {
+    DomainEvents domainEvents = this.eventStoreFeignClient.getDomainEventsForBoardUuid(boardUuid);
+    return domainEvents.getDomainEvents();
   }
 
   @FeignClient(value = API_GW_SERVICE_NAME /*, fallback = HystrixFallbackEventStoreClient.class */)
