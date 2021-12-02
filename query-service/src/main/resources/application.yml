@@ -1,0 +1,146 @@
+server:
+  port: ${PORT:9081}
+  tomcat:
+    remote-ip-header: x-forwarded-for
+    protocol-header: x-forwarded-proto
+
+spring:
+  application:
+    name: my-event-store-query
+  jackson:
+    serialization:
+      write_dates_as_timestamps: false
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'
+      base-path: ${app.management.base-path:/actuator}
+  server:
+    base-path: ${app.management.base-path:/actuator}
+
+eureka:
+  client:
+    service-url:
+      defaultZone: 'http://admin:password@localhost:8761/eureka'
+  instance:
+    prefer-ip-address: true
+    #    status-page-url-path: ${management.server.servlet.context-path}/info
+    status-page-url-path: /info
+    #    health-check-url-path: ${management.server.servlet.context-path}/health
+    health-check-url-path: /health
+    lease-renewal-interval-in-seconds: 1
+    
+---
+spring:
+  cloud:
+    stream:
+      bindings:
+        input:
+          binder: kafka-event-notification
+          destination: board-event-notifications
+          contentType: application/json
+          group: command-board-events-group
+          consumer:
+            use-native-decoding: true
+            header-mode: none
+            configuration.key.serializer: org.apache.kafka.common.serialization.StringSerializer
+            configuration.value.serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      binders:
+        kafka-event-notification:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    streams:
+                      binder:
+                        brokers: localhost
+      default-binder: kafka-event-notification
+  config:
+    activate:
+      on-profile: event-store
+
+resilience4j.circuitbreaker:
+  instances:
+    my-event-store:
+      registerHealthIndicator: true
+      slidingWindowSize: 10
+      permittedNumberOfCallsInHalfOpenState: 3
+      slidingWindowType: TIME_BASED
+      minimumNumberOfCalls: 20
+      waitDurationInOpenState: 50s
+      failureRateThreshold: 50
+      eventConsumerBufferSize: 10
+      recordFailurePredicate: com.example.eventstore.query.exception.RecordFailurePredicate
+      
+---
+spring:
+  cloud:
+    stream:
+      bindings:
+#        output:
+#          binder: kafka_board_events
+#          destination: board-events
+#          contentType: application/json
+#          group: query-board-events-group
+#          producer:
+#            useNativeDecoding: true
+#            header-mode: none
+        input:
+          binder: kstream_board_events
+          destination: board-events
+          contentType: application/json
+          group: query-board-events-group
+          consumer:
+            useNativeDecoding: true
+            header-mode: none
+      binders:
+        kstream_board_events:
+          type: kstream
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    streams:
+                      binder:
+                        brokers: localhost
+                        configuration:
+                          default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                          default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+        kafka_board_events:
+          type: kafka
+          environment:
+            spring:
+              cloud:
+                stream:
+                  kafka:
+                    streams:
+                      binder:
+                        brokers: localhost
+                        configuration:
+                          default.key.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+                          default.value.serde: org.apache.kafka.common.serialization.Serdes$StringSerde
+      kafka:
+        streams:
+          binder:
+            configuration:
+              default:
+                key:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerd
+                value:
+                  serde: org.apache.kafka.common.serialization.Serdes$StringSerd
+  config:
+    activate:
+      on-profile: kafka
+
+logger.level:
+  org.apache.kafka: DEBUG
+  org.apache.kafka.clients: ERROR
+
+logging:
+  level:
+    root: INFO

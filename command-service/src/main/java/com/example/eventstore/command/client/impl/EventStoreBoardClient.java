@@ -1,7 +1,7 @@
-package com.example.eventstore.command.client;
+package com.example.eventstore.command.client.impl;
 
 
-import com.example.eventstore.client.BoardClient;
+import com.example.eventstore.command.client.BoardClient;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.event.DomainEvents;
 import com.example.eventstore.model.Board;

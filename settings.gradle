@@ -5,3 +5,5 @@ include 'core-api-impl'
 include 'command-api'
 include 'command-api-impl'
 include 'command-service'
+include 'query-api'
+

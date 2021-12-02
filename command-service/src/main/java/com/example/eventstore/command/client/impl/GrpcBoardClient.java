@@ -1,7 +1,7 @@
-package com.example.eventstore.command.client;
+package com.example.eventstore.command.client.impl;
 
 
-import com.example.eventstore.client.BoardClient;
+import com.example.eventstore.command.client.BoardClient;
 import com.example.eventstore.command.grpc.Board;
 import com.example.eventstore.command.grpc.DomainEvent;
 import lombok.extern.slf4j.Slf4j;

@@ -1,4 +1,4 @@
-package com.example.eventstore.client;
+package com.example.eventstore.command.client;
 
 import java.util.List;
 import java.util.UUID;

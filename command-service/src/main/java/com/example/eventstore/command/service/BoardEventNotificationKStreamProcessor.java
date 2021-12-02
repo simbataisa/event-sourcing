@@ -1,6 +1,5 @@
 package com.example.eventstore.command.service;
 
-import com.example.eventstore.command.config.KafkaConfig;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -28,6 +27,11 @@ import org.springframework.stereotype.Service;
 import java.time.Duration;
 import java.util.Properties;
 
+import static com.example.eventstore.Constants.AGGREGATION_SNAPSHOT_VIEW;
+import static com.example.eventstore.Constants.KAFKA_BROKER;
+import static com.example.eventstore.Constants.NOTIFICATION_TOPIC;
+import static com.example.eventstore.Constants.SNAPSHOT_TOPIC;
+
 @Slf4j
 @Data
 @Profile("camel-kafka")
@@ -36,10 +40,9 @@ public class BoardEventNotificationKStreamProcessor implements DisposableBean {
 
   private static final String APPLICATION_ID = "my-event-store-command";
   private static final String CLIENT_ID = "my-event-store-command-event-processor";
-  private static final String BROKER = "localhost:9092";
-  private static final String IN_TOPIC = KafkaConfig.NOTIFICATION_TOPIC;
-  private static final String MATERIALIZED_VIEW = KafkaConfig.AGGREGATION_SNAPSHOT_VIEW;
-  private static final String OUT_TOPIC = KafkaConfig.SNAPSHOT_TOPIC;
+  private static final String IN_TOPIC = NOTIFICATION_TOPIC;
+  private static final String MATERIALIZED_VIEW = AGGREGATION_SNAPSHOT_VIEW;
+  private static final String OUT_TOPIC = SNAPSHOT_TOPIC;
   private final KafkaStreams streams;
 
   private final JsonSerde<DomainEvent> domainEventSerde;
@@ -48,7 +51,13 @@ public class BoardEventNotificationKStreamProcessor implements DisposableBean {
 
   private final KafkaAdmin kafkaAdmin;
 
-  public BoardEventNotificationKStreamProcessor(ObjectMapper objectMapper, KafkaAdmin kafkaAdmin, NewTopic notificationTopic, NewTopic snapshotTopic, NewTopic aggregationTopic) {
+  public BoardEventNotificationKStreamProcessor(
+      ObjectMapper objectMapper,
+      KafkaAdmin kafkaAdmin,
+      NewTopic notificationTopic,
+      NewTopic snapshotTopic,
+      NewTopic aggregationTopic
+  ) {
     this.objectMapper = objectMapper;
     this.domainEventSerde = new JsonSerde<>(DomainEvent.class, objectMapper);
     this.boardSerde = new JsonSerde<>(Board.class, objectMapper);
@@ -70,9 +79,15 @@ public class BoardEventNotificationKStreamProcessor implements DisposableBean {
     final Properties streamsConfiguration = new Properties();
     streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, APPLICATION_ID);
     streamsConfiguration.put(StreamsConfig.CLIENT_ID_CONFIG, CLIENT_ID);
-    streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER);
+    streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, KAFKA_BROKER);
     streamsConfiguration.put(JsonDeserializer.TRUSTED_PACKAGES, "com.example.eventstore.event");
-    streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
+    streamsConfiguration.put(
+        StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
+        Serdes
+            .String()
+            .getClass()
+            .getName()
+    );
 
     streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonSerde.class.getName());
     streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
@@ -87,14 +102,26 @@ public class BoardEventNotificationKStreamProcessor implements DisposableBean {
    */
   private void createStream(final StreamsBuilder builder) {
     final KStream<String, DomainEvent> domainEventKStream = builder.stream(IN_TOPIC);
-    var table = domainEventKStream.map((key, value) -> {
-      log.info("key [{}] value [{}]", key, value);
-      if (value != null) {
-        return new KeyValue<>(value.getBoardUuid().toString(), value);
-      }
-      return null;
-    }).groupBy((s, domainEvent) -> s, Grouped.with(Serdes.String(), this.domainEventSerde)).aggregate(Board::new, (key, domainEvent, board) -> board.handleEvent(domainEvent), Materialized.<String, Board, KeyValueStore<Bytes, byte[]>>as(MATERIALIZED_VIEW).withKeySerde(Serdes.String()).withValueSerde(boardSerde));
-    table.toStream().to(OUT_TOPIC, Produced.with(Serdes.String(), boardSerde));
+    var table = domainEventKStream
+        .map((key, value) -> {
+          log.info("key [{}] value [{}]", key, value);
+          if (value != null) {
+            return new KeyValue<>(value.getBoardUuid().toString(), value);
+          }
+          return null;
+        })
+        .groupBy((s, domainEvent) -> s, Grouped.with(Serdes.String(), this.domainEventSerde))
+        .aggregate(
+            Board::new,
+            (key, domainEvent, board) -> board.handleEvent(domainEvent),
+            Materialized
+                .<String, Board, KeyValueStore<Bytes, byte[]>>as(MATERIALIZED_VIEW)
+                .withKeySerde(Serdes.String())
+                .withValueSerde(boardSerde)
+        );
+    table
+        .toStream()
+        .to(OUT_TOPIC, Produced.with(Serdes.String(), boardSerde));
   }
 
   @Override

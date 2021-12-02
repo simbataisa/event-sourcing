@@ -6,12 +6,13 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.config.TopicBuilder;
 
+import static com.example.eventstore.Constants.AGGREGATION_SNAPSHOT_VIEW;
+import static com.example.eventstore.Constants.NOTIFICATION_TOPIC;
+import static com.example.eventstore.Constants.SNAPSHOT_TOPIC;
+
 @Profile("camel-kafka")
 @Configuration
 public class KafkaConfig {
-  public static final String NOTIFICATION_TOPIC = "board-event-notifications";
-  public static final String AGGREGATION_SNAPSHOT_VIEW = "board-events-aggregation";
-  public static final String SNAPSHOT_TOPIC = "board-events-aggregation-topic";
 
   @Bean
   public NewTopic notificationTopic() {

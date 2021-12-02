@@ -5,6 +5,7 @@ apply from: "${rootDir}/gradle/lombok.gradle"
 
 dependencies {
     implementation(project(":core-api"))
+    implementation(project(":query-api"))
 
     implementation "org.springframework.boot:spring-boot-starter-actuator"
     implementation "org.springframework.boot:spring-boot-starter-security"
@@ -16,6 +17,28 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-starter-circuitbreaker-resilience4j"
     implementation "org.springframework.cloud:spring-cloud-starter-openfeign"
     implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
+
+    // Kafka
+    implementation "org.springframework.cloud:spring-cloud-stream"
+    implementation "org.springframework.cloud:spring-cloud-stream-binder-kafka"
+    implementation "org.springframework.cloud:spring-cloud-stream-binder-kafka-streams"
+    implementation 'org.springframework.kafka:spring-kafka:2.7.6'
+    implementation 'org.apache.kafka:kafka-streams:3.0.0'
+    implementation "org.apache.kafka:kafka-clients:3.0.0"
+
+    // Camel
+    implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camelVersion}"
+    implementation "org.apache.camel.springboot:camel-servlet-starter:${camelVersion}"
+    implementation "org.apache.camel.springboot:camel-jackson-starter:${camelVersion}"
+    implementation "org.apache.camel.springboot:camel-swagger-java-starter:${camelVersion}"
+    implementation "org.apache.camel.springboot:camel-groovy-starter:${camelVersion}"
+    implementation "org.apache.camel.springboot:camel-mock-starter:${camelVersion}"
+    implementation "org.apache.camel:camel-endpointdsl:${camelVersion}"
+    implementation "org.apache.camel:camel-kafka:${camelVersion}"
+    implementation "org.apache.camel:camel-test-spring-junit5:${camelVersion}"
+
+    //
+    implementation 'org.javatuples:javatuples:1.2'
 
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
     testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'

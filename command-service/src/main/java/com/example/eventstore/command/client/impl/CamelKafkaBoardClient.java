@@ -1,13 +1,11 @@
-package com.example.eventstore.command.client;
+package com.example.eventstore.command.client.impl;
 
 import com.example.eventstore.Constants;
-import com.example.eventstore.client.BoardClient;
-import com.example.eventstore.command.config.KafkaConfig;
+import com.example.eventstore.command.client.BoardClient;
 import com.example.eventstore.command.service.BoardEventNotificationKStreamProcessor;
 import com.example.eventstore.command.service.BoardEventNotificationPublishService;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
 import org.apache.camel.ProducerTemplate;
@@ -21,6 +19,8 @@ import org.springframework.stereotype.Component;
 import java.util.List;
 import java.util.UUID;
 
+import static com.example.eventstore.Constants.AGGREGATION_SNAPSHOT_VIEW;
+
 
 @Slf4j
 @Profile(value = {"camel-kafka"})
@@ -29,23 +29,18 @@ public class CamelKafkaBoardClient implements BoardClient<Board, DomainEvent> {
 
   private final ProducerTemplate producerTemplate;
   private final CamelContext camelContext;
-  private final ObjectMapper objectMapper;
-  private final BoardEventNotificationKStreamProcessor boardEventNotificationKStreamProducerService;
   private final ReadOnlyKeyValueStore<String, Board> store;
 
   public CamelKafkaBoardClient(
       CamelContext camelContext,
-      ObjectMapper objectMapper,
       BoardEventNotificationKStreamProcessor boardEventNotificationKStreamProducerService
   ) {
     this.camelContext = camelContext;
     this.producerTemplate = camelContext.createProducerTemplate();
-    this.objectMapper = objectMapper;
-    this.boardEventNotificationKStreamProducerService = boardEventNotificationKStreamProducerService;
-    this.store = this.boardEventNotificationKStreamProducerService
+    this.store = boardEventNotificationKStreamProducerService
         .getStreams()
         .store(StoreQueryParameters.fromNameAndType(
-            KafkaConfig.AGGREGATION_SNAPSHOT_VIEW,
+            AGGREGATION_SNAPSHOT_VIEW,
             QueryableStoreTypes.keyValueStore()
         ));
   }
