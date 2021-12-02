@@ -3,7 +3,7 @@ package com.example.eventstore.command.client.impl;
 import com.example.eventstore.Constants;
 import com.example.eventstore.command.client.BoardClient;
 import com.example.eventstore.command.service.BoardEventNotificationKStreamProcessor;
-import com.example.eventstore.command.service.BoardEventNotificationPublishService;
+import com.example.eventstore.command.service.BoardEventNotificationPublisher;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
 import lombok.extern.slf4j.Slf4j;
@@ -52,7 +52,7 @@ public class CamelKafkaBoardClient implements BoardClient<Board, DomainEvent> {
     List<DomainEvent> newChanges = board.changes();
     newChanges.forEach(domainEvent -> {
       log.info("save : domainEvent = {}", domainEvent);
-      var endpoint = this.camelContext.getEndpoint(Constants.CAMEL_DIRECT_ROUTE_PREFIX + BoardEventNotificationPublishService.ROUTE_ID);
+      var endpoint = this.camelContext.getEndpoint(Constants.CAMEL_DIRECT_ROUTE_PREFIX + BoardEventNotificationPublisher.ROUTE_ID);
       this.producerTemplate.asyncSendBody(endpoint, domainEvent);
     });
     board.flushChanges();
