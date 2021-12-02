@@ -1,0 +1,11 @@
+spring:
+  cloud:
+    config:
+      label: master
+      profile: ${spring.cloud.config.server.profile:default}
+      discovery:
+        enabled: true
+        service-id: ${IVAPP_CLOUD_CONFIG_SERVER_NAME:spring-cloud-config-server}
+#      uri: http://${spring.cloud.config.server.host}:${spring.cloud.config.server.port}
+  profiles:
+    active: ${spring.cloud.config.server.profile:default}

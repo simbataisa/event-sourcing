@@ -1,0 +1,22 @@
+apply plugin: "java"
+apply from: "${rootDir}/gradle/spring-boot.gradle"
+apply from: "${rootDir}/gradle/lombok.gradle"
+
+version '0.0.1-SNAPSHOT'
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
+    implementation "org.springframework.cloud:spring-cloud-starter-gateway"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-client"
+
+    // Logging
+    implementation "net.logstash.logback:logstash-logback-encoder:4.11"
+    
+    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
+    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+}
+
+test {
+    useJUnitPlatform()
+}

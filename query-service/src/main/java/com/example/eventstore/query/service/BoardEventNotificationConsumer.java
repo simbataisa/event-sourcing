@@ -30,6 +30,7 @@ public class BoardEventNotificationConsumer extends RouteBuilder implements Proc
 
   private final JsonSerde<DomainEvent> domainEventSerde;
   private final ObjectMapper objectMapper;
+  private final BoardService boardService;
 
   @Override
   public void configure() throws Exception {
@@ -76,8 +77,8 @@ public class BoardEventNotificationConsumer extends RouteBuilder implements Proc
       log.info("No board should exist in cache if 'BoardInitialized' event is received");
     } else {
       try {
-        //this.service.uncacheTarget(UUID.fromString(domainEvent.getString("boardUuid")));
         log.info("uncacheTarget {} event {}", domainEvent.getBoardUuid(), domainEvent.eventType());
+        this.boardService.uncacheTarget(domainEvent.getBoardUuid());
       } catch (Exception e) {
         log.error(e.getMessage(), e);
       }

@@ -13,7 +13,7 @@ import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-@Profile(value = {"default", "event-store", "kafka", "camel-kafka"})
+@Profile(value = {"default", "event-store"})
 @Service
 public class BoardServiceImpl implements BoardService {
 
