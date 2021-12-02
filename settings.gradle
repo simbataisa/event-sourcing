@@ -7,4 +7,5 @@ include 'command-api-impl'
 include 'command-service'
 include 'query-api'
 include 'api-gateway-service'
-
+include 'event-storage-api'
+include 'event-storage-service'

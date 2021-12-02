@@ -1,0 +1,431 @@
+{
+	"info": {
+		"_postman_id": "d959177b-bf70-4f69-9614-1d2b639dda1b",
+		"name": "CQRS Event Sourcing",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Event Store",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9082/my-event-store/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9082",
+					"path": [
+						"my-event-store",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Direct] Query",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9081/my-event-store-query/boards/{{boardUuid}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9081",
+					"path": [
+						"my-event-store-query",
+						"boards",
+						"{{boardUuid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Direct] Command - Create Board",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// let responseHeaders = pm.response.headers.all();",
+							"// console.info(responseHeaders);",
+							"// console.info(responseHeaders[\"Location\"]);",
+							"let location = responseHeaders[\"Location\"]",
+							"let boardUuid = location.substr(location.lastIndexOf(\"/\") + 1, location.length);",
+							"console.info(boardUuid);",
+							"postman.setEnvironmentVariable(\"boardUuid\", boardUuid);",
+							""
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9080/my-event-store-command/boards/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9080",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Direct] Command - Rename Board",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "dennis board",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:9080/my-event-store-command/boards/{{boardUuid}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9080",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						"{{boardUuid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Direct] Command - Get Board",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9080/my-event-store-command/boards/{{boardUuid}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9080",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						"{{boardUuid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Direct] Command - Get Events",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:9080/my-event-store-command/boards/{{boardUuid}}/events",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9080",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						"{{boardUuid}}",
+						"events"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Direct] Command - Add Stories",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"// let responseHeaders = pm.response.headers.all();",
+							"// console.info(responseHeaders);",
+							"// console.info(responseHeaders[\"Location\"]);",
+							"let location = responseHeaders[\"Location\"]",
+							"let storyUuid = location.substr(location.lastIndexOf(\"/\") + 1, location.length);",
+							"console.info(storyUuid);",
+							"postman.setEnvironmentVariable(\"storyUuid\", storyUuid);"
+						],
+						"type": "text/javascript"
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "store 3",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9080/my-event-store-command/boards/{{boardUuid}}/stories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9080",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						"{{boardUuid}}",
+						"stories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Direct] Command - Update Story",
+			"request": {
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "dennis story",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9080/my-event-store-command/boards/{{boardUuid}}/stories/{{storyUuid}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9080",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						"{{boardUuid}}",
+						"stories",
+						"{{storyUuid}}"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[Direct] Command - Delete Story",
+			"request": {
+				"method": "DELETE",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "store 3",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:9080/my-event-store-command/boards/{{boardUuid}}/stories/{{storyUuid}}",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "9080",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						"{{boardUuid}}",
+						"stories",
+						"{{storyUuid}}"
+					],
+					"query": [
+						{
+							"key": "name",
+							"value": "dennis story 1",
+							"disabled": true
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[API_GW] Event Store",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8765/my-event-store/boards/6e2383df-7765-48b0-93c5-49f62cdd1743",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8765",
+					"path": [
+						"my-event-store",
+						"boards",
+						"6e2383df-7765-48b0-93c5-49f62cdd1743"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[API_GW] Query",
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8765/my-event-store-query/boards/6e2383df-7765-48b0-93c5-49f62cdd1743",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8765",
+					"path": [
+						"my-event-store-query",
+						"boards",
+						"6e2383df-7765-48b0-93c5-49f62cdd1743"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[API_GW] Command - Add Stories",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "store 2",
+							"type": "text"
+						}
+					],
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:8765/my-event-store-command/boards/6e2383df-7765-48b0-93c5-49f62cdd1743/stories",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8765",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						"6e2383df-7765-48b0-93c5-49f62cdd1743",
+						"stories"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[API_GW] Command - Rename Board",
+			"request": {
+				"method": "PATCH",
+				"header": [],
+				"body": {
+					"mode": "formdata",
+					"formdata": [
+						{
+							"key": "name",
+							"value": "My new name",
+							"type": "text"
+						}
+					]
+				},
+				"url": {
+					"raw": "http://localhost:8765/my-event-store-command/boards/6e2383df-7765-48b0-93c5-49f62cdd1743",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8765",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						"6e2383df-7765-48b0-93c5-49f62cdd1743"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "[API_GW] Command - Create Board Copy 2",
+			"request": {
+				"method": "POST",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:8765/my-event-store-command/boards/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "8765",
+					"path": [
+						"my-event-store-command",
+						"boards",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}

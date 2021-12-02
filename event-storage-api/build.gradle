@@ -1,4 +1,6 @@
 apply plugin: "java"
+apply from: "${rootDir}/gradle/spring-boot.gradle"
+apply from: "${rootDir}/gradle/lombok.gradle"
 
 dependencies {
     implementation(project(":core-api"))

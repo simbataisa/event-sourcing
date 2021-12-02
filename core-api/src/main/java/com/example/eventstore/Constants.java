@@ -7,6 +7,7 @@ public final class Constants {
   public static final String AGGREGATION_SNAPSHOT_VIEW = "board-events-aggregation";
   public static final String SNAPSHOT_TOPIC = "board-events-aggregation-topic";
   public static final String KAFKA_BROKER = "localhost:9092";
-  
+  public static final String EMPTY = "";
+
   private Constants(){}
 }
