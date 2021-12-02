@@ -3,7 +3,6 @@ package com.example.eventstore.command.service;
 import com.example.eventstore.command.config.KafkaConfig;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -22,6 +21,7 @@ import org.apache.kafka.streams.state.KeyValueStore;
 import org.springframework.beans.factory.DisposableBean;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.core.KafkaAdmin;
+import org.springframework.kafka.support.serializer.JsonDeserializer;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.stereotype.Service;
 
@@ -48,13 +48,7 @@ public class BoardEventNotificationKStreamProcessor implements DisposableBean {
 
   private final KafkaAdmin kafkaAdmin;
 
-  public BoardEventNotificationKStreamProcessor(
-      ObjectMapper objectMapper,
-      KafkaAdmin kafkaAdmin,
-      NewTopic notificationTopic,
-      NewTopic snapshotTopic,
-      NewTopic aggregationTopic
-  ) {
+  public BoardEventNotificationKStreamProcessor(ObjectMapper objectMapper, KafkaAdmin kafkaAdmin, NewTopic notificationTopic, NewTopic snapshotTopic, NewTopic aggregationTopic) {
     this.objectMapper = objectMapper;
     this.domainEventSerde = new JsonSerde<>(DomainEvent.class, objectMapper);
     this.boardSerde = new JsonSerde<>(Board.class, objectMapper);
@@ -77,21 +71,10 @@ public class BoardEventNotificationKStreamProcessor implements DisposableBean {
     streamsConfiguration.put(StreamsConfig.APPLICATION_ID_CONFIG, APPLICATION_ID);
     streamsConfiguration.put(StreamsConfig.CLIENT_ID_CONFIG, CLIENT_ID);
     streamsConfiguration.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, BROKER);
-    streamsConfiguration.put(
-        StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG,
-        Serdes
-            .String()
-            .getClass()
-            .getName()
-    );
+    streamsConfiguration.put(JsonDeserializer.TRUSTED_PACKAGES, "com.example.eventstore.event");
+    streamsConfiguration.put(StreamsConfig.DEFAULT_KEY_SERDE_CLASS_CONFIG, Serdes.String().getClass().getName());
 
-    streamsConfiguration.put(
-        StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG,
-        Serdes
-            .String()
-            .getClass()
-            .getName()
-    );
+    streamsConfiguration.put(StreamsConfig.DEFAULT_VALUE_SERDE_CLASS_CONFIG, JsonSerde.class.getName());
     streamsConfiguration.put(StreamsConfig.COMMIT_INTERVAL_MS_CONFIG, 10 * 1000);
     streamsConfiguration.put(StreamsConfig.CACHE_MAX_BYTES_BUFFERING_CONFIG, 0);
     return streamsConfiguration;
@@ -103,33 +86,15 @@ public class BoardEventNotificationKStreamProcessor implements DisposableBean {
    * @param builder StreamsBuilder to use
    */
   private void createStream(final StreamsBuilder builder) {
-    final KStream<String, String> domainEventKStream = builder.stream(IN_TOPIC);
-    var table = domainEventKStream
-        .map((key, value) -> {
-          log.info("key [{}] value [{}]", key, value);
-          if (value != null) {
-            try {
-              DomainEvent domainEvent = this.objectMapper.readValue(value, DomainEvent.class);
-              return new KeyValue<>(domainEvent.getBoardUuid().toString(), domainEvent);
-            } catch (JsonProcessingException e) {
-              log.error(e.getMessage(), e);
-            }
-
-          }
-          return null;
-        })
-        .groupBy((s, domainEvent) -> s, Grouped.with(Serdes.String(), this.domainEventSerde))
-        .aggregate(
-            Board::new,
-            (key, domainEvent, board) -> board.handleEvent(domainEvent),
-            Materialized
-                .<String, Board, KeyValueStore<Bytes, byte[]>>as(MATERIALIZED_VIEW)
-                .withKeySerde(Serdes.String())
-                .withValueSerde(boardSerde)
-        );
-    table
-        .toStream()
-        .to(OUT_TOPIC, Produced.with(Serdes.String(), boardSerde));
+    final KStream<String, DomainEvent> domainEventKStream = builder.stream(IN_TOPIC);
+    var table = domainEventKStream.map((key, value) -> {
+      log.info("key [{}] value [{}]", key, value);
+      if (value != null) {
+        return new KeyValue<>(value.getBoardUuid().toString(), value);
+      }
+      return null;
+    }).groupBy((s, domainEvent) -> s, Grouped.with(Serdes.String(), this.domainEventSerde)).aggregate(Board::new, (key, domainEvent, board) -> board.handleEvent(domainEvent), Materialized.<String, Board, KeyValueStore<Bytes, byte[]>>as(MATERIALIZED_VIEW).withKeySerde(Serdes.String()).withValueSerde(boardSerde));
+    table.toStream().to(OUT_TOPIC, Produced.with(Serdes.String(), boardSerde));
   }
 
   @Override

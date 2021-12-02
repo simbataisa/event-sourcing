@@ -7,7 +7,6 @@ import com.example.eventstore.command.service.BoardEventNotificationKStreamProce
 import com.example.eventstore.command.service.BoardEventNotificationPublishService;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.CamelContext;
@@ -59,11 +58,7 @@ public class CamelKafkaBoardClient implements BoardClient<Board, DomainEvent> {
     newChanges.forEach(domainEvent -> {
       log.info("save : domainEvent = {}", domainEvent);
       var endpoint = this.camelContext.getEndpoint(Constants.CAMEL_DIRECT_ROUTE_PREFIX + BoardEventNotificationPublishService.ROUTE_ID);
-      try {
-        this.producerTemplate.asyncSendBody(endpoint, objectMapper.writeValueAsString(domainEvent));
-      } catch (JsonProcessingException e) {
-        log.error(e.getMessage(), e);
-      }
+      this.producerTemplate.asyncSendBody(endpoint, domainEvent);
     });
     board.flushChanges();
 

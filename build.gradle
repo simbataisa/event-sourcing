@@ -30,10 +30,6 @@ ext {
   set("snippetsDir", file("build/generated-snippets"))
 }
 
-dependencies {
-
-}
-
 dependencyManagement {
   imports {
     mavenBom "org.springframework.cloud:spring-cloud-dependencies:${springCloudVersion}"
@@ -49,9 +45,6 @@ asciidoctor {
   inputs.dir snippetsDir
   dependsOn test
 }
-
-jar.enabled = false
-bootJar.enabled = false
 
 subprojects {
   group "${projectGroupId}"
