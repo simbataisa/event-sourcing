@@ -10,13 +10,13 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Service;
 
 import java.util.Objects;
 
-import static com.example.eventstore.Constants.KAFKA_BROKER;
 import static com.example.eventstore.Constants.NOTIFICATION_TOPIC;
 import static org.apache.camel.builder.endpoint.StaticEndpointBuilders.kafka;
 
@@ -31,11 +31,13 @@ public class BoardEventNotificationConsumer extends RouteBuilder implements Proc
   private final JsonSerde<DomainEvent> domainEventSerde;
   private final ObjectMapper objectMapper;
   private final BoardService boardService;
+  @Value("spring.kafka.bootstrap-servers")
+  private String bootstrapServers;
 
   @Override
   public void configure() throws Exception {
     from(kafka(NOTIFICATION_TOPIC).clientId(CLIENT_ID)
-                                  .brokers(KAFKA_BROKER)
+                                  .brokers(bootstrapServers)
                                   .keySerializer(StringSerializer.class.getName())
                                   .valueSerializer(JsonSerializer.class.getName())
                                   .getUri()).routeId(ROUTE_ID).process(this).end();

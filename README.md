@@ -35,7 +35,11 @@ kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/serve
       - local loopback host: `spring.kafka.bootstrap-servers=localhost:9092`
       - remote ip: `spring.kafka.bootstrap-servers=192.168.1.19:9092`
     - `query-service` = `default` or `event-store` 
-                                         
+
+<span style="font-size: larger; font-weight: bold; color: deeppink">
+  When using remote broker, the remote kafka `advertised.listeners` or `listeners` <br>
+  in `server.properties` should be set to the machine ip address. If not it will use "localhost/127.0.0.1"
+</span>                                         
 
 ## How to test
                        

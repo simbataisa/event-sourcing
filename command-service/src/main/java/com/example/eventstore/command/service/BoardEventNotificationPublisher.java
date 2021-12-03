@@ -7,11 +7,11 @@ import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.builder.endpoint.StaticEndpointBuilders;
 import org.apache.camel.component.kafka.KafkaConstants;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Profile;
 import org.springframework.kafka.support.serializer.JsonSerializer;
 import org.springframework.stereotype.Component;
 
-import static com.example.eventstore.Constants.KAFKA_BROKER;
 import static com.example.eventstore.Constants.NOTIFICATION_TOPIC;
 
 @Profile("camel-kafka")
@@ -20,6 +20,9 @@ public class BoardEventNotificationPublisher extends RouteBuilder implements Pro
 
   public static final String ROUTE_ID = "my-event-store-command-camel-publish-route";
   private static final String CLIENT_ID = "my-event-store-command-camel";
+
+  @Value("${spring.kafka.bootstrap-servers}")
+  private String bootstrapServers;
 
   @Override
   public void configure() throws Exception {
@@ -30,7 +33,7 @@ public class BoardEventNotificationPublisher extends RouteBuilder implements Pro
         .to(StaticEndpointBuilders
                 .kafka(NOTIFICATION_TOPIC)
                 .clientId(CLIENT_ID)
-                .brokers(KAFKA_BROKER)
+                .brokers(bootstrapServers)
                 .keySerializer(StringSerializer.class.getName())
                 .valueSerializer(JsonSerializer.class.getName())
         )

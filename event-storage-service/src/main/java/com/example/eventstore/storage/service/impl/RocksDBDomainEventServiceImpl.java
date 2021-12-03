@@ -6,8 +6,8 @@ import com.example.eventstore.event.BoardInitialized;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.event.DomainEvents;
 import com.example.eventstore.storage.persitence.DomainEventEntity;
+import com.example.eventstore.storage.persitence.DomainEventRocksDBRepository;
 import com.example.eventstore.storage.persitence.DomainEventsEntity;
-import com.example.eventstore.storage.persitence.DomainEventsRepository;
 import com.example.eventstore.storage.service.DomainEventService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -26,25 +26,24 @@ import java.util.UUID;
 
 @Slf4j
 @RequiredArgsConstructor
-@Profile({"default", "h2"})
+@Profile("rocksdb")
 @Transactional(readOnly = true)
 @Service
-public class DomainEventServiceImpl implements DomainEventService {
+public class RocksDBDomainEventServiceImpl implements DomainEventService {
 
-  private final DomainEventsRepository domainEventsRepository;
+  private final DomainEventRocksDBRepository domainEventRocksDBRepository;
   private final ObjectMapper objectMapper;
 
   public DomainEvents getDomainEvents(final String boardUuid) {
-    log.info("processDomainEvent : enter");
-    log.info("processDomainEvent : boardUuid=" + boardUuid);
-    return domainEventsRepository.findById(boardUuid).map(DomainEventsEntity::toModel).orElse(new DomainEventsEntity(
+    log.info("getDomainEvents : boardUuid=" + boardUuid);
+    return domainEventRocksDBRepository.find(boardUuid).map(DomainEventsEntity::toModel).orElse(new DomainEventsEntity(
         boardUuid).toModel());
   }
 
 
   public List<DomainEvents> getAllDomainEvents() {
     final List<DomainEvents> domainEventsList = new ArrayList<>();
-    domainEventsRepository.findAll().forEach(i -> domainEventsList.add(i.toModel()));
+    domainEventRocksDBRepository.findAll().forEach(i -> domainEventsList.add(i.toModel()));
     return domainEventsList;
   }
 
@@ -72,15 +71,10 @@ public class DomainEventServiceImpl implements DomainEventService {
 
     String boardUuid = event.getBoardUuid().toString();
 
-    this.domainEventsRepository.findById(boardUuid)
-                               .ifPresent(entity -> {
-                                 log.info(
-                                     "processBoardEvent : a DomainEventsEntity[{}] was entity for boardUuid[{}]. ",
-                                     entity,
-                                     boardUuid
-                                 );
-                                 populateEntityFromEventAndEntityCopy(event, entity);
-                               });
+    this.domainEventRocksDBRepository.find(boardUuid).ifPresent(entity -> {
+      log.info("processBoardEvent : a DomainEventsEntity[{}] was entity for boardUuid[{}]. ", entity, boardUuid);
+      populateEntityFromEventAndEntityCopy(event, entity);
+    });
   }
 
   private void populateEntityFromEventAndEntityCopy(
@@ -94,7 +88,7 @@ public class DomainEventServiceImpl implements DomainEventService {
     domainEventEntity.setOccurredOn(LocalDateTime.ofInstant(occurredOn, ZoneOffset.UTC));
     domainEventEntity.setData(this.domainEventToJsonString(event));
     entity.getDomainEvents().add(domainEventEntity);
-    this.domainEventsRepository.save(entity);
+    this.domainEventRocksDBRepository.save(entity);
   }
 
   private String domainEventToJsonString(DomainEvent event) {

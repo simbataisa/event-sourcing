@@ -6,7 +6,6 @@ public final class Constants {
   public static final String NOTIFICATION_TOPIC = "board-event-notifications";
   public static final String AGGREGATION_SNAPSHOT_VIEW = "board-events-aggregation";
   public static final String SNAPSHOT_TOPIC = "board-events-aggregation-topic";
-  public static final String KAFKA_BROKER = "192.168.1.19:9092";
   public static final String BOOTSTRAP_SERVER_ENV_KEY = "spring.kafka.bootstrap-servers";
   public static final String CLOUD_IP_ADDRESS_ENV_KEY = "spring.cloud.client.ip-address";
   public static final String SERVER_PORT_ENV_KEY = "server.port";
