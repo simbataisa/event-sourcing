@@ -21,13 +21,19 @@ kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/serve
     - `naming-server` = `default`
     - `api-gateway-service` = `default`
     - `event-storage-service` = `camel-kafka`
-    - `command-service` = `camel-kafka`
+    - `command-service` = `camel-kafka` 
+      - with remote or local kafka broker:
+        - local loopback host: `spring.kafka.bootstrap-servers=localhost:9092`
+        - remote ip: `spring.kafka.bootstrap-servers=192.168.1.19:9092`
     - `query-service` = `default` or `event-store`
   - Option 2:
     - `naming-server` = `default`
     - `api-gateway-service` = `default`
     - `event-storage-service` = `event-store`
     - `command-service` = `event-store`
+      - with remote or local kafka broker:
+      - local loopback host: `spring.kafka.bootstrap-servers=localhost:9092`
+      - remote ip: `spring.kafka.bootstrap-servers=192.168.1.19:9092`
     - `query-service` = `default` or `event-store` 
                                          
 

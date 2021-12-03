@@ -5,6 +5,7 @@ apply from: "${rootDir}/gradle/lombok.gradle"
 
 dependencies {
     implementation(project(":core-api"))
+    implementation(project(":core-api-impl"))
     implementation(project(":query-api"))
 
     implementation "org.springframework.boot:spring-boot-starter-actuator"

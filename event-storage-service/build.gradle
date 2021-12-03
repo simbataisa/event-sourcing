@@ -2,7 +2,7 @@ apply plugin: "java"
 apply from: "${rootDir}/gradle/spring-boot.gradle"
 apply from: "${rootDir}/gradle/lombok.gradle"
 
-version '0.0.1-SNAPSHOT'
+version "0.0.1-SNAPSHOT"
 
 dependencies {
     implementation(project(":core-api"))
@@ -25,9 +25,9 @@ dependencies {
     implementation "org.springframework.cloud:spring-cloud-stream"
     implementation "org.springframework.cloud:spring-cloud-stream-binder-kafka"
     implementation "org.springframework.cloud:spring-cloud-stream-binder-kafka-streams"
-    implementation 'org.springframework.kafka:spring-kafka:2.7.6'
-    implementation 'org.apache.kafka:kafka-streams:3.0.0'
-    implementation "org.apache.kafka:kafka-clients:3.0.0"
+    implementation "org.springframework.kafka:spring-kafka:2.7.6"
+    implementation "org.apache.kafka:kafka-streams:${apacheKafkaVersion}"
+    implementation "org.apache.kafka:kafka-clients:${apacheKafkaVersion}"
 
     // Camel
     implementation "org.apache.camel.springboot:camel-spring-boot-starter:${camelVersion}"
@@ -43,8 +43,8 @@ dependencies {
     // Logging
     implementation "net.logstash.logback:logstash-logback-encoder:4.11"
     
-    testImplementation 'org.junit.jupiter:junit-jupiter-api:5.7.0'
-    testRuntimeOnly 'org.junit.jupiter:junit-jupiter-engine:5.7.0'
+    testImplementation "org.junit.jupiter:junit-jupiter-api:5.7.0"
+    testRuntimeOnly "org.junit.jupiter:junit-jupiter-engine:5.7.0"
 }
 
 test {
@@ -53,5 +53,5 @@ test {
 
 bootJar {
     enabled = true
-    mainClass = 'com.example.eventstore.storage.StorageApplication'
+    mainClass = "com.example.eventstore.storage.StorageApplication"
 }

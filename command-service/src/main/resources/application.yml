@@ -41,6 +41,7 @@ spring:
   kafka:
     admin:
       client-id: my-event-store-command-admin
+    bootstrap-servers: localhost:9092
 
 grpc:
   enabled: true
