@@ -5,9 +5,9 @@ import com.example.eventstore.Constants;
 import com.example.eventstore.event.BoardInitialized;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.event.DomainEvents;
-import com.example.eventstore.storage.persitence.DomainEventEntity;
-import com.example.eventstore.storage.persitence.DomainEventsEntity;
-import com.example.eventstore.storage.persitence.DomainEventsRepository;
+import com.example.eventstore.storage.model.DomainEventEntity;
+import com.example.eventstore.storage.model.DomainEventsEntity;
+import com.example.eventstore.storage.repository.DomainEventsRepository;
 import com.example.eventstore.storage.service.DomainEventService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -87,7 +87,7 @@ public class DomainEventServiceImpl implements DomainEventService {
       DomainEvent event,
       DomainEventsEntity entity
   ) {
-    DomainEventEntity domainEventEntity = new DomainEventEntity();
+    var domainEventEntity = new DomainEventEntity();
     domainEventEntity.setId(UUID.randomUUID().toString());
 
     Instant occurredOn = event.occurredOn();

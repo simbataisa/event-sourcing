@@ -13,11 +13,21 @@ public final class CommonUtils {
   private CommonUtils() {
   }
 
-  public static boolean thisHost(
-      HostStoreInfo hostStoreInfo,
-      HostInfo hostInfo
-  ) {
+  public static boolean thisHost(HostStoreInfo hostStoreInfo, HostInfo hostInfo) {
     return hostStoreInfo.getHost().equals(hostInfo.host()) && hostStoreInfo.getPort() == hostInfo.port();
+  }
+
+  public static void getOSInfo() {
+    String os = System.getProperty("os.name");
+    String osbitVersion = System.getProperty("os.arch");
+    String jvmbitVersion = System.getProperty("sun.arch.data.model");
+
+    System.out.println(os + " : " + osbitVersion + " : " + jvmbitVersion);
+  }
+
+  public static String getUsersHomeDir() {
+    String users_home = System.getProperty("user.home");
+    return users_home.replace("\\", "/"); // to support all platforms.
   }
 
   public static InetAddress getLocalHostLANAddress() throws UnknownHostException {

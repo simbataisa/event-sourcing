@@ -1,4 +1,4 @@
-package com.example.eventstore.storage.persitence;
+package com.example.eventstore.storage.repository;
 
 import org.springframework.boot.actuate.trace.http.HttpTrace;
 import org.springframework.boot.actuate.trace.http.HttpTraceRepository;
