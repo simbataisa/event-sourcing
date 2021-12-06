@@ -10,6 +10,12 @@ spring:
   jackson:
     serialization:
       write_dates_as_timestamps: false
+  rsocket:
+    server:
+      port: 9981
+
+  kafka:
+    bootstrap-servers: localhost:9092
 
 management:
   endpoints:
@@ -34,6 +40,8 @@ eureka:
     
 ---
 spring:
+  kafka:
+    bootstrap-servers: localhost:9092
   cloud:
     stream:
       bindings:
@@ -140,6 +148,7 @@ spring:
 logger.level:
   org.apache.kafka: DEBUG
   org.apache.kafka.clients: ERROR
+  org.springframework.web.socket: DEBUG
 
 logging:
   level:
