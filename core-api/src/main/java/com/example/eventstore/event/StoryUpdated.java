@@ -35,6 +35,7 @@ public class StoryUpdated extends DomainEvent {
 
   }
 
+  @JsonIgnore
   public Story getStory() {
     return new Story(this.name);
   }

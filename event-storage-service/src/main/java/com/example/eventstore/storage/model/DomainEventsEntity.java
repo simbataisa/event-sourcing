@@ -1,12 +1,14 @@
-package com.example.eventstore.storage.persitence;
+package com.example.eventstore.storage.model;
 
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.event.DomainEvents;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.kafka.support.JacksonUtils;
 
 import java.util.LinkedHashSet;
 import java.util.Set;
@@ -29,7 +31,10 @@ import static javax.persistence.CascadeType.ALL;
 @Slf4j
 public class DomainEventsEntity {
 
-  private static final ObjectMapper objectMapper = new ObjectMapper();
+  private static final ObjectMapper objectMapper = JacksonUtils.enhancedObjectMapper();
+  static {
+     objectMapper.disable(SerializationFeature.WRITE_DATE_KEYS_AS_TIMESTAMPS);
+  }
 
   @Id
   private String boardUuid;
@@ -51,7 +56,7 @@ public class DomainEventsEntity {
   public DomainEvents toModel() {
     DomainEvents model = new DomainEvents();
     model.setBoardUuid(UUID.fromString(boardUuid));
-    model.setDomainEvents(domainEvents.stream().map(this.stringToDomainEventFunction()).collect(toList()));
+    model.setDomainEvents(domainEvents.stream().sorted().map(this.stringToDomainEventFunction()).collect(toList()));
     return model;
   }
 

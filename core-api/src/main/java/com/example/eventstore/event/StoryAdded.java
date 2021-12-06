@@ -32,6 +32,8 @@ public class StoryAdded extends DomainEvent {
     this.storyUuid = storyUuid;
     this.name = name;
   }
+  
+  @JsonIgnore
   public Story getStory() {
     return new Story(this.name);
   }

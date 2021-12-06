@@ -1,7 +1,9 @@
-package com.example.eventstore.storage.persitence;
+package com.example.eventstore.storage.repository;
 
 
+import com.example.eventstore.common.util.CommonUtils;
 import com.example.eventstore.repository.KVRepository;
+import com.example.eventstore.storage.model.DomainEventsEntity;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.extern.slf4j.Slf4j;
@@ -20,7 +22,8 @@ import java.util.Optional;
 public class DomainEventRocksDBRepository implements KVRepository<String, DomainEventsEntity> {
 
   private static final String FILE_NAME = "event-store-rocksdb";
-  private static final String FILE_DIR = "~/tmp/rocks";
+  private static final String USER_HOME = CommonUtils.getUsersHomeDir();
+  private static final String FILE_DIR = USER_HOME + "/tmp/rocks";
 
   private final ObjectMapper objectMapper;
   private RocksDB rocksDB;
@@ -30,6 +33,10 @@ public class DomainEventRocksDBRepository implements KVRepository<String, Domain
     RocksDB.loadLibrary();
     try (final Options options = new Options()) {
       options.setCreateIfMissing(true);
+      log.info("Initializing RocksDB...");
+      log.info("USER_HOME {}", USER_HOME);
+      log.info("FILE_DIR {}", FILE_DIR);
+      log.info("FILE_NAME {}", FILE_NAME);
       File baseDir = new File(FILE_DIR, FILE_NAME);
       log.info("baseDir.getParentFile().toPath() = " + baseDir.getParentFile().toPath());
       log.info("baseDir.getAbsoluteFile().toPath() = " + baseDir.getAbsoluteFile().toPath());
@@ -76,7 +83,8 @@ public class DomainEventRocksDBRepository implements KVRepository<String, Domain
           "Error retrieving the entry with key: {}, cause: {}, message: {}",
           key,
           e.getCause(),
-          e.getMessage()
+          e.getMessage(),
+          e
       );
     }
 
