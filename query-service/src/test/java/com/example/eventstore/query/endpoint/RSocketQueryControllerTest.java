@@ -1,6 +1,8 @@
 package com.example.eventstore.query.endpoint;
 
+import com.example.eventstore.model.Board;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
@@ -8,6 +10,7 @@ import org.junit.jupiter.api.TestInstance;
 import org.springframework.core.codec.CharSequenceEncoder;
 import org.springframework.core.codec.StringDecoder;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
+import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeTypeUtils;
@@ -39,7 +42,7 @@ class RSocketQueryControllerTest {
 
   private static RSocketStrategies rsocketStrategies() {
     return RSocketStrategies.builder()
-                            .decoder(StringDecoder.textPlainOnly())
+                            .decoder(StringDecoder.textPlainOnly(), new Jackson2JsonDecoder())
                             .encoder(CharSequenceEncoder.allMimeTypes())
                             .dataBufferFactory(new DefaultDataBufferFactory(true))
                             .build();
@@ -48,10 +51,15 @@ class RSocketQueryControllerTest {
 
   @Test
   void board() {
+    final String uuid =  "60d3c82e-d9ec-4dd4-9709-dd28fe01966d";
     var result = rSocketRequester.route("/my-event-store-query/rs/boards")
-                                 .data("60d3c82e-d9ec-4dd4-9709-dd28fe01966d")
-                                 .retrieveMono(String.class);
-    StepVerifier.create(result).consumeNextWith(log::info).verifyComplete();
+                                 .data(uuid)
+                                 .retrieveMono(Board.class);
+    StepVerifier.create(result).consumeNextWith(i -> {
+      log.info("Received board {}", i);
+      Assertions.assertEquals(uuid, i.getBoardUuid().toString());
+      Assertions.assertEquals("New Board", i.getName());
+    }).verifyComplete();
 
   }
 }
