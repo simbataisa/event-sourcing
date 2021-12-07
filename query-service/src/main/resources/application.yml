@@ -13,6 +13,9 @@ spring:
   rsocket:
     server:
       port: 9981
+      mapping-path: rs
+      transport: websocket
+      
 
   kafka:
     bootstrap-servers: localhost:9092

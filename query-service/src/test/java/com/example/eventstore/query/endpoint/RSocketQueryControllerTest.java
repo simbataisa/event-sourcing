@@ -2,6 +2,7 @@ package com.example.eventstore.query.endpoint;
 
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
 import org.springframework.core.codec.CharSequenceEncoder;
@@ -10,11 +11,13 @@ import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
 import org.springframework.util.MimeTypeUtils;
+import reactor.test.StepVerifier;
 import reactor.util.retry.Retry;
 
+import java.net.URI;
 import java.time.Duration;
 
-
+@Disabled("Comment this to test your rsocket connection")
 @Slf4j
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RSocketQueryControllerTest {
@@ -31,7 +34,7 @@ class RSocketQueryControllerTest {
                                       2)
                               )))
                               .dataMimeType(MimeTypeUtils.APPLICATION_JSON)
-                              .tcp("localhost", 9981);
+                              .websocket(URI.create("ws://localhost:9981/rs"));
   }
 
   private static RSocketStrategies rsocketStrategies() {
@@ -45,13 +48,10 @@ class RSocketQueryControllerTest {
 
   @Test
   void board() {
-    rSocketRequester.route("/my-event-store-query/rs/boards").data("60d3c82e-d9ec-4dd4-9709-dd28fe01966d").retrieveMono(
-        String.class).subscribe(log::info);
+    var result = rSocketRequester.route("/my-event-store-query/rs/boards")
+                                 .data("60d3c82e-d9ec-4dd4-9709-dd28fe01966d")
+                                 .retrieveMono(String.class);
+    StepVerifier.create(result).consumeNextWith(log::info).verifyComplete();
 
-    try {
-      Thread.sleep(1000);
-    } catch (InterruptedException e) {
-      log.error(e.getMessage());
-    }
   }
 }
