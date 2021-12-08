@@ -3,6 +3,10 @@
 :iconsdir: docs/resources/icons
 :toc:
 
+== Architecture Diagram
+
+image:docs/resources/images/architecture_diagram.png[]
+
 == How to run
 . Start Naming Server Service
 . Start Zookeeper
@@ -112,8 +116,3 @@ curl --location --request DELETE 'http://localhost:9080/my-event-store-command/b
 - password: _empty_
 
 image:docs/resources/h2.png[h2]
-
-
-== Architecture Diagram
-
-image:docs/resources/images/architecture_diagram.png[]
