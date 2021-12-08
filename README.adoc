@@ -158,7 +158,7 @@ https://docs.asciidoctor.org/diagram-extension/latest/
 . `ditaa` ascii diagram
 * https://asciiflow.com
 * https://textik.com/
-
++
 [ditaa]
 ....
 +--------+   +-------+    +-------+
@@ -172,7 +172,7 @@ https://docs.asciidoctor.org/diagram-extension/latest/
 +-------------------------+
 ....
 
-. Plant UML
+. `Plant UML`
 +
 [plantuml]
 ....
@@ -210,74 +210,17 @@ database "MySql" {
 @enduml
 ....
 
-. Mermaid
+. `Mermaid`
 +
 [mermaid]
 ....
-sequenceDiagram
-  participant U1 as User 1
-  participant U2 as User 2
-  participant Payment
-  participant RC as CRI
-  U1->>+ Payment: U1: Redeem Coupon
-  Payment->>+ RC: U1: apply coupon
-  RC->> RC: U1: Atomically check condition and stock, <br> decrease stock by 1, <br> trx = bookingId/invoiceId, <br> state = reserved
-  alt Failure
-    RC->>-Payment: U1: coupon apply success
-    Payment-->>U1: Display Error and show non-discounted payment info
-  else Success
-    RC->>Payment: U1: coupon apply success
-    Payment-->>U1: Display discounted payment info
-    par User 1 run script to remove coupon after clicking PayNow
-      U1->>Payment: U1: Click PayNow
-      Payment->>+RC: U1: revalidate coupon and indicate Payment start
-      RC->>RC: Atomicall revalidate coupon <br> check if trx = U1: bookingId, state = reserved?
-      alt Not Found
-        RC-->>Payment: Failed validation
-        Payment-->>U1: Error message and display non-discounted payment info
-      else Found
-        RC->>RC: Atomically update state = PAYMENT_INPROGRESS
-        Note over RC: update stage of this voucher to <br> prevent it from being removed/detached
-        RC-->>-Payment: U1: succesful validation
-        Payment->>Payment: U1: Process Payment
-        alt Success Payment
-          Payment->>+RC: U1: Payment success
-          RC->>-RC: Atomically update coupon state = PAID
-          Payment-->>U1: U1: Display Success
-        else Fail Payment
-          Payment->>+RC: U1: Payment fail
-          RC->>-RC: Atomically update coupon state = active, trx = null, stock increase by 1
-          Payment-->>-U1: U1: Display payment fail
-        end
-      end
-    and U1 tries to remove coupon
-      loop keep running to increase more stock
-        U1->>+Payment: U1: Remove Coupon
-        Payment->>+ RC: U1: Remove coupon
-        RC->>RC: U1: Atomically check <br> trx = U1: bookingId/invoiceId, <br> state = reserved?
-        alt Found
-          RC->>RC: Atomically update coupon state = ACTIVE, <br> trx = null
-          RC-->>Payment: Remove Coupon Success
-          Payment-->>U1: Remove Coupon Success
-        else Not Found
-          RC-->>-Payment: Remove Coupon Failure
-          Payment-->>-U1: Remove Coupon Failure
-        end
-      end
-    and U2 tries to apply coupon
-      loop until success
-        U2->>+ Payment: U2: Redeem Coupon
-        Payment->>+ RC: U2: apply coupon
-        RC->> RC: U2: U1: Atomically check condition and stock, <br> decrease stock by 1, <br> trx = bookingId/invoiceId, <br> state = reserved
-      end
-      RC-->>-Payment: U2: coupon apply success
-      Note over Payment, RC: This can only be success if U1 booking has removed the coupon <br> and detach from booking
-      Payment-->>-U2: Display discounted payment info
-      U2->>+Payment: U2: Click PayNow
-      Payment->>+RC: U2: revalidate coupon
-      RC-->>-Payment: U2: succesful validation
-      Payment->>Payment: U2: Process Payment
-      Payment-->>-U2: U2: Display Success
-    end
-  end
+graph TD
+    A[Christmas] -->|Get money| B(Go shopping)
+    B --> C{Let me think}
+    C -->|One| D[Laptop]
+    C -->|Two| E[iPhone]
+    C -->|Three| F[fa:fa-car Car]
 ....
+
+
+image:docs/resources/images/asciidoctor-diagram.png[]
