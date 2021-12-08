@@ -149,3 +149,23 @@ rsocket-cli --request --debug --route=/my-event-store-query/rs/boards -i 0447492
 - password: _empty_
 
 image:docs/resources/h2.png[h2]
+
+== Diagram Tools
+https://docs.asciidoctor.org/diagram-extension/latest/
+
+. `ditaa` ascii diagram
+* https://asciiflow.com
+* https://textik.com/
+
+[ditaa]
+....
++--------+   +-------+    +-------+
+|        | --+ ditaa +--> |       |
+|  Text  |   +-------+    |diagram|
+|Document|   |!magic!|    |       |
+|     {d}|   |       |    |       |
++---+----+   +-------+    +-------+
+:                         ^
+|       Lots of work      |
++-------------------------+
+....
