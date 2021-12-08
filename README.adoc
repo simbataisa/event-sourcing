@@ -114,4 +114,6 @@ curl --location --request DELETE 'http://localhost:9080/my-event-store-command/b
 image:docs/resources/h2.png[h2]
 
 
-== TODO: Diagram
+== Architecture Diagram
+
+image:docs/resources/images/architecture_diagram.png[]
