@@ -1,16 +1,17 @@
 = my-event-store-demo
+:toc:
 
 == How to run
 . Start Naming Server Service
 . Start Zookeeper
-
++
 [source,bash]
 ----
 zookeeper-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/zookeeper.properties
 ----
 
 . Start Kafka
-
++
 [source,bash]
 ----
 kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/server.properties
@@ -55,7 +56,7 @@ Please import the collection from [here](docs/resources/CQRS%20Event%20Sourcing.
 
 === Using `curl` command
 . Create `Board`
-
++
 [source, bash]
 ----
 curl --location --request POST 'http://localhost:9080/my-event-store-command/boards/' \
@@ -63,7 +64,7 @@ curl --location --request POST 'http://localhost:9080/my-event-store-command/boa
 ----
 
 . Get `Board`
-
++
 [source, bash]
 ----
 curl --location --request GET 'http://localhost:9080/my-event-store-command/boards/9b0415a2-d13a-4af3-8fee-9c902d47cc13' \
@@ -71,7 +72,7 @@ curl --location --request GET 'http://localhost:9080/my-event-store-command/boar
 ----
 
 . Rename `Board`
-
++
 [source, bash]
 ----
 curl --location --request PATCH 'http://localhost:9080/my-event-store-command/boards/9b0415a2-d13a-4af3-8fee-9c902d47cc13?name=dennis 3' \
@@ -79,7 +80,7 @@ curl --location --request PATCH 'http://localhost:9080/my-event-store-command/bo
 ----
 
 . Add `Story to Board`
-
++
 [source, bash]
 ----
 curl --location --request POST 'http://localhost:9080/my-event-store-command/boards/9b0415a2-d13a-4af3-8fee-9c902d47cc13/stories' \
@@ -88,7 +89,7 @@ curl --location --request POST 'http://localhost:9080/my-event-store-command/boa
 ----
 
 . Update `Story`
-
++
 [source, bash]
 ----
 curl --location --request PUT 'http://localhost:9080/my-event-store-command/boards/9b0415a2-d13a-4af3-8fee-9c902d47cc13/stories/fb7f25d5-3a68-4ab9-9aa9-3546e8847091?name=dennis story 1' \
@@ -97,7 +98,7 @@ curl --location --request PUT 'http://localhost:9080/my-event-store-command/boar
 ----
 
 . Delete `Story`
-
++
 [source, bash]
 ----
 curl --location --request DELETE 'http://localhost:9080/my-event-store-command/boards/9b0415a2-d13a-4af3-8fee-9c902d47cc13/stories/fb7f25d5-3a68-4ab9-9aa9-3546e8847091' \
