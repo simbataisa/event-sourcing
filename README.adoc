@@ -23,7 +23,7 @@ kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/serve
 
   * `spring.profiles.active=event-store`
   * `spring.profiles.active=camel-kafka`
-  * **Please note that the `naming-server` app can be checked out [here](https://bitbucket.org/simbataisa/mynetflix-eureka-naming-server/src/master/)**
+  * **Please note that the `naming-server` app can be checked out https://bitbucket.org/simbataisa/mynetflix-eureka-naming-server/src/master/[here]**
 
   * **Service and its `profile`:**
     * `api-gateway-service` = `default`
