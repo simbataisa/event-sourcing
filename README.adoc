@@ -7,8 +7,13 @@
 
 image:docs/resources/images/architecture_diagram.png[]
 
-== How to run
-. Start Naming Server Service
+. Build your project
++
+[source, bash]
+----
+./gradlew clean build --info
+----
+
 . Start Zookeeper
 +
 [source,bash]
@@ -22,12 +27,14 @@ zookeeper-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/z
 ----
 kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/server.properties
 ----
+. Start Naming Server Service
++
+**Please note that the `naming-server` app can be checked out https://bitbucket.org/simbataisa/mynetflix-eureka-naming-server/src/master/[here]**
 
 . Run app with spring `profile`:
 
   * `spring.profiles.active=event-store`
   * `spring.profiles.active=camel-kafka`
-  * **Please note that the `naming-server` app can be checked out https://bitbucket.org/simbataisa/mynetflix-eureka-naming-server/src/master/[here]**
 
   * **Service and its `profile`:**
     * `api-gateway-service` = `default`
@@ -110,6 +117,36 @@ curl --location --request PUT 'http://localhost:9080/my-event-store-command/boar
 curl --location --request DELETE 'http://localhost:9080/my-event-store-command/boards/9b0415a2-d13a-4af3-8fee-9c902d47cc13/stories/fb7f25d5-3a68-4ab9-9aa9-3546e8847091' \
 --header 'Cookie: JSESSIONID=C3FD1BBEE36328C536EF9ED0B7CB5BC8'
 ----
+
+== RSocket CLI
+
+You can use https://github.com/rsocket/rsocket-cli[`rsocket-cli`] to test the `rsocket` endpoints
+
+. Install `rsocket-cli`  via `Homebrew` (this does not work for Apple M1) or checkout the code and build it locally.
++
+[source, bash]
+----
+brew install yschimke/tap/rsocket-cli
+
+OR
+
+./gradlew --console plain installDist
+----
+
+. Connect to `spring` rsocket server and `route` with following command (`stream`, `request`)
++
+[source, bash]
+----
+rsocket-cli --stream --debug --route=/my-event-store-query/rs/domain-event-stream ws://localhost:9981/rs
+
+rsocket-cli --request --debug --route=/my-event-store-query/rs/boards -i 04474929-5929-4e73-8b87-39feb7a15e6f ws://localhost:9981/rs
+
+./rsocket-cli --help
+----
+
+
+
+2.
 
 == H2 DB in your `jdbc:h2:~/test`
 - user: `sa`
