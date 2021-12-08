@@ -144,10 +144,6 @@ rsocket-cli --request --debug --route=/my-event-store-query/rs/boards -i 0447492
 ./rsocket-cli --help
 ----
 
-
-
-2.
-
 == H2 DB in your `jdbc:h2:~/test`
 - user: `sa`
 - password: _empty_
