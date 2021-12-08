@@ -1,18 +1,20 @@
 package com.example.eventstore.query.endpoint;
 
+import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeAll;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.TestInstance;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.core.codec.CharSequenceEncoder;
 import org.springframework.core.codec.StringDecoder;
 import org.springframework.core.io.buffer.DefaultDataBufferFactory;
 import org.springframework.http.codec.json.Jackson2JsonDecoder;
 import org.springframework.messaging.rsocket.RSocketRequester;
 import org.springframework.messaging.rsocket.RSocketStrategies;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.util.MimeTypeUtils;
 import reactor.core.publisher.Hooks;
 import reactor.test.StepVerifier;
@@ -22,8 +24,8 @@ import java.net.URI;
 import java.time.Duration;
 import java.util.concurrent.CancellationException;
 
-@Disabled("Comment this to test your rsocket connection")
 @Slf4j
+@ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
 class RSocketQueryControllerTest {
 
@@ -70,11 +72,11 @@ class RSocketQueryControllerTest {
   }
 
   @Test
-  void boards() throws InterruptedException {
+  void domainEvents() throws InterruptedException {
     rSocketRequester
-        .route("/my-event-store-query/rs/board-events")
-        .retrieveFlux(Board.class)
-        .subscribe(System.out::println);
+        .route("/my-event-store-query/rs/domain-event-stream")
+        .retrieveFlux(DomainEvent.class)
+        .subscribe(i -> log.info(i.toString()));
     while (true) {
       Thread.sleep(1000);
     }

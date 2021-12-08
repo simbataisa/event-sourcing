@@ -58,12 +58,12 @@ public class RSocketQueryController {
     return boardMono(UUID.fromString(uuid));
   }
 
-  @MessageMapping("/my-event-store-query/rs/board-events")
-  public Flux<String> boardEvents() {
+  @MessageMapping("/my-event-store-query/rs/domain-event-stream")
+  public Flux<String> domainEventStream() {
     return Flux.from(this.camelReactiveStreamsService.fromStream(
-                   BoardEventReactiveStream.STREAM_PATH,
-                   String.class
-               ));
+        BoardEventReactiveStream.STREAM_PATH,
+        String.class
+    ));
   }
 
   private Mono<String> boardMono(UUID uuid) {

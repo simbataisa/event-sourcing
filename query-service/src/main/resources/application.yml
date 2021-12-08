@@ -151,7 +151,8 @@ spring:
 logger.level:
   org.apache.kafka: DEBUG
   org.apache.kafka.clients: ERROR
-  org.springframework.web.socket: DEBUG
+  org.springframework.web.socket: INFO
+  org.springframework.http.codec: INFO
 
 logging:
   level:
