@@ -81,4 +81,17 @@ class RSocketQueryControllerTest {
       Thread.sleep(1000);
     }
   }
+
+  @Test
+  void boardEventStream() throws InterruptedException {
+    final String uuid = "e978fec4-1567-4b06-a459-98a0444c397a";
+    rSocketRequester
+        .route("/my-event-store-query/rs/board-event-stream")
+        .data(uuid)
+        .retrieveFlux(DomainEvent.class)
+        .subscribe(i -> log.info(i.toString()));
+    while (true) {
+      Thread.sleep(1000);
+    }
+  }
 }

@@ -1,6 +1,7 @@
 package com.example.eventstore.query.endpoint;
 
 
+import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
 import com.example.eventstore.query.service.BoardEventReactiveStream;
 import com.example.eventstore.query.service.BoardService;
@@ -64,6 +65,22 @@ public class RSocketQueryController {
         BoardEventReactiveStream.STREAM_PATH,
         String.class
     ));
+  }
+
+  @MessageMapping("/my-event-store-query/rs/board-event-stream")
+  public Flux<DomainEvent> boardEventStream(String boardUuid) {
+    final UUID uuid = UUID.fromString(boardUuid);
+    return Flux.from(this.camelReactiveStreamsService.fromStream(
+        BoardEventReactiveStream.STREAM_PATH,
+        String.class
+    )).mapNotNull(s -> {
+      try {
+        return this.objectMapper.readValue(s, DomainEvent.class);
+      } catch (JsonProcessingException e) {
+        log.error(e.getMessage(), e);
+      }
+      return null;
+    }).filter(s -> s.getBoardUuid().equals(uuid));
   }
 
   private Mono<String> boardMono(UUID uuid) {
