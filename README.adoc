@@ -50,9 +50,9 @@ in `server.properties` should be set to the machine ip address. If not it will u
 == How to test
 
 === Postman Collection
-Please import the collection from [here](docs/resources/CQRS%20Event%20Sourcing.postman_collection.json)
+Please import the collection from link:docs/resources/CQRS_Event_Sourcing.postman_collection.json[here].
 
-![Postman Collection](docs/resources/postman.png)
+image::docs/resources/postman.png[]
 
 === Using `curl` command
 . Create `Board`
@@ -109,7 +109,7 @@ curl --location --request DELETE 'http://localhost:9080/my-event-store-command/b
 - user: `sa`
 - password: _empty_
 
-![H2](docs/resources/h2.png)
+image:docs/resources/h2.png[h2]
 
 
 == TODO: Diagram
