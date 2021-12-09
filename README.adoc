@@ -42,9 +42,9 @@ kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/serve
 
 * **Service and its `profile`:**
 * `api-gateway-service` = `default`
+* `naming-server` = `default`
+
 * Option 1:
-** `naming-server` = `default`
-** `api-gateway-service` = `default`
 ** `event-storage-service` connects to *kafka* cluster topic to process the event.
 *** `default` or `h2`
 *** `rocksdb`
@@ -57,8 +57,6 @@ kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/serve
 ** `query-service` = `default` or `event-store`
 
 * Option 2:
-** `naming-server` = `default`
-** `api-gateway-service` = `default`
 ** `event-storage-service` = `event-store`
 ** `command-service` = `event-store`
 *** This will call `event-store-service` endpoints to process event instead of using `kafka` broker.
