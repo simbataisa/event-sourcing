@@ -1,0 +1,20 @@
+apply plugin: "java"
+apply from: "${rootDir}/gradle/spring-boot.gradle"
+apply from: "${rootDir}/gradle/lombok.gradle"
+
+dependencies {
+    implementation "org.springframework.boot:spring-boot-starter-actuator"
+    implementation "org.springframework.boot:spring-boot-starter-security"
+    implementation "org.springframework.cloud:spring-cloud-starter-netflix-eureka-server"
+    implementation "org.springframework.cloud:spring-cloud-starter-sleuth"
+
+    // Logging
+    implementation "net.logstash.logback:logstash-logback-encoder:4.11"
+
+    annotationProcessor "org.springframework.boot:spring-boot-configuration-processor"
+    testImplementation "org.springframework.boot:spring-boot-starter-test"
+}
+
+test {
+    useJUnitPlatform()
+}

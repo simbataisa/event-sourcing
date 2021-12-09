@@ -1,0 +1,15 @@
+spring:
+  application:
+    name: netflix-eureka-naming-server
+  cloud:
+    config:
+      uri: ${CONFIG_SERVER_URL:http://localhost:8888}
+    profiles:
+      active: ${spring.cloud.config.server.profile:default}
+
+eureka:
+  instance:
+#    status-page-url-path: ${management.server.servlet.context-path}/info
+    status-page-url-path: /info
+#    health-check-url-path: ${management.server.servlet.context-path}/health
+    health-check-url-path: /health
