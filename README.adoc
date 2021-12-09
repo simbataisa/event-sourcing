@@ -9,6 +9,7 @@
 
 image:docs/resources/images/architecture_diagram.png[]
 
+== How to Run
 . Build your project
 +
 [source,bash]
@@ -29,19 +30,14 @@ zookeeper-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/z
 ----
 kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/server.properties
 ----
-. Start Naming Server Service with `default` profile
-+
-* Access your *Eureka Naming Server* at http://localhost:8761/
-* User: `admin`
-* Password: `password`
 
-. Run app with spring `profile`:
+. *Run app with spring profile property `spring.profiles.active`:*
 
-* `spring.profiles.active=event-store`
-* `spring.profiles.active=camel-kafka`
-
-* **Service and its `profile`:**
 * `api-gateway-service` = `default`
+** Access your *Eureka Naming Server* at http://localhost:8761/
+** User: `admin`
+** Password: `password`
+
 * `naming-server` = `default`
 
 * Option 1:
