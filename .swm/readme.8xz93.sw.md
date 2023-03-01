@@ -35,33 +35,46 @@ app_version: 1.3.5
     kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/server.properties
     ```
     
-4. Run app with spring profile property `spring.profiles.active`:
-* `api-gateway-service` = `default`
-  * Access your *Eureka Naming Server* at http://localhost:8761/
-  * User: `admin`
-  * Password: `password`
+4.  Run the app with a spring profile property `spring.profiles.active`:
+    
 
-* `naming-server` = `default`
-
-* Option 1:
-  * `event-storage-service` connects to *kafka* cluster topic to process the event.
-  * `default` or `h2`
-  * `rocksdb`
-
-  * `command-service` = `camel-kafka`
-    * with remote or local kafka broker:
-      * local loopback host: `spring.kafka.bootstrap-servers=localhost:9092`
-      * remote ip: `spring.kafka.bootstrap-servers=192.168.1.19:9092`
-
-  * `query-service` = `default` or `event-store`
-
-* Option 2:
-  * `event-storage-service` = `event-store`
-  * `command-service` = `event-store`
-
-    * *This will call `event-store-service` endpoints to process event instead of using `kafka` broker.*
-
-  * `query-service` = `default` or `event-store`
+*   `api-gateway-service` = `default`
+    
+    *   Access your _Eureka Naming Server_ at [http://localhost:8761/](http://localhost:8761/)
+        
+    *   User: `admin`
+        
+    *   Password: `password`
+        
+*   `naming-server` = `default`
+    
+*   Option 1:
+    
+    *   `event-storage-service` connects to `kafka` cluster topics to process the event.
+        
+    *   `default` or `h2`
+        
+    *   `rocksdb`
+        
+    *   `command-service` = `camel-kafka`
+        
+        *   with remote or local `kafka` broker:
+            
+            *   local loopback host: `spring.kafka.bootstrap-servers=localhost:9092`
+                
+            *   remote IP: `spring.kafka.bootstrap-servers=192.168.1.19:9092`
+                
+    *   `query-service` = `default` or `event-store`
+        
+*   Option 2:
+    
+    *   `event-storage-service` = `event-store`
+        
+    *   `command-service` = `event-store`
+        
+        *   **_This will call_** `event-store-service` **_endpoints to process events instead of using_** `kafka` **_broker._**
+            
+    *   `query-service` = `default` or `event-store`
 
 <br/>
 
