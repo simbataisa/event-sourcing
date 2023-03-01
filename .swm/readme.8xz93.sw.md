@@ -43,10 +43,10 @@ app_version: 1.3.5
 
 * `naming-server` = `default`
 
-  * Option 1:
-    * `event-storage-service` connects to *kafka* cluster topic to process the event.
-    * `default` or `h2`
-    * `rocksdb`
+* Option 1:
+  * `event-storage-service` connects to *kafka* cluster topic to process the event.
+  * `default` or `h2`
+  * `rocksdb`
 
   * `command-service` = `camel-kafka`
     * with remote or local kafka broker:
@@ -58,9 +58,10 @@ app_version: 1.3.5
 * Option 2:
   * `event-storage-service` = `event-store`
   * `command-service` = `event-store`
-    * This will call `event-store-service` endpoints to process event instead of using `kafka` broker.
 
-* `query-service` = `default` or `event-store`
+    * *This will call `event-store-service` endpoints to process event instead of using `kafka` broker.*
+
+  * `query-service` = `default` or `event-store`
 
 <br/>
 
