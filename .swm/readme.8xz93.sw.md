@@ -11,7 +11,81 @@ app_version: 1.3.5
 
 <br/>
 
-<div align="center"><img src="https://firebasestorage.googleapis.com/v0/b/swimmio-content/o/repositories%2FZ2l0aHViJTNBJTNBZXZlbnQtc291cmNpbmclM0ElM0FzaW1iYXRhaXNh%2Ff9bc45c0-4e36-4e23-8f72-65ae15079f8d.png?alt=media&token=b36e37e4-de5b-4297-bf42-eeb831c021a7" style="width:'50%'"/></div>
+<div align="center"><img src="https://firebasestorage.googleapis.com/v0/b/swimmio-content/o/repositories%2FZ2l0aHViJTNBJTNBZXZlbnQtc291cmNpbmclM0ElM0FzaW1iYXRhaXNh%2Ff9bc45c0-4e36-4e23-8f72-65ae15079f8d.png?alt=media&token=b36e37e4-de5b-4297-bf42-eeb831c021a7" style="width:'100%'"/></div>
+
+<br/>
+
+## How to Run
+
+1.  Build your project
+    
+    ```bash
+    ./gradlew clean build --info
+    ```
+    
+2.  Start Zookeeper
+    
+    ```bash
+    zookeeper-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/zookeeper.properties
+    ```
+    
+3.  Start Kafka
+    
+    ```
+    kafka-server-start /Users/dennis.dao/workspace/app/kafka_2.13-2.8.0/config/server.properties
+    ```
+    
+*
+
+<br/>
+
+<!--MERMAID {width:100}-->
+```mermaid
+graph TD
+A[Christmas] -->|Get money| B(Go shopping)
+B --> C{Let me think}
+C -->|One| D[Laptop]
+C -->|Two| E[iPhone]
+C -->|Three| F[fa:fa-car Car]
+```
+<!--MCONTENT {content: "graph TD<br/>\nA\\[Christmas\\] \\-\\-\\>|Get money| B(Go shopping)<br/>\nB \\-\\-\\> C{Let me think}<br/>\nC \\-\\-\\>|One| D\\[Laptop\\]<br/>\nC \\-\\-\\>|Two| E\\[iPhone\\]<br/>\nC \\-\\-\\>|Three| F\\[fa:fa-car Car\\]"} --->
+
+<br/>
+
+```
+@startuml
+
+package "Some Group" {
+  HTTP - [First Component]
+  [Another Component]
+}
+
+node "Other Groups" {
+  FTP - [Second Component]
+  [First Component] --> FTP
+}
+
+cloud {
+  [Example 1]
+}
+
+
+database "MySql" {
+  folder "This is my folder" {
+    [Folder 3]
+  }
+  frame "Foo" {
+    [Frame 4]
+  }
+}
+
+
+[Another Component] --> [Example 1]
+[Example 1] --> [Folder 3]
+[Folder 3] --> [Frame 4]
+
+@enduml
+```
 
 <br/>
 
