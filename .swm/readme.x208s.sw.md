@@ -1,6 +1,6 @@
 ---
 id: x208s
-title: V2
+title: README
 file_version: 1.1.2
 app_version: 1.3.5
 ---
@@ -77,8 +77,29 @@ app_version: 1.3.5
     *   `query-service` = `default` or `event-store`
         
 
-_When using a remote broker, the remote_ `kafka` `advertised.listeners` _or_ `listeners` _in_ `server.properties` _should be set to the machine's IP address. If not it will use_ `localhost/127.0.0.1`\_<br/>
-\_
+_When using a remote broker, the remote_ `kafka` `advertised.listeners` _or_ `listeners` _in_ `server.properties` _should be set to the machine's IP address. If not it will use_ `localhost/127.0.0.1`
+
+## Diagram Tool
+
+### ascii diagram
+
+*   `ditaa`
+    
+    ```
+    +--------+   +-------+    +-------+
+    |        | --+ ditaa +--> |       |
+    |  Text  |   +-------+    |diagram|
+    |Document|   |!magic!|    |       |
+    |     {d}|   |       |    |       |
+    +---+----+   +-------+    +-------+
+    :                         ^
+    |       Lots of work      |
+    +-------------------------+
+    ```
+    
+*   [https://asciiflow.com](https://asciiflow.com)
+    
+*   [https://textik.com/](https://textik.com/)
 
 <br/>
 
