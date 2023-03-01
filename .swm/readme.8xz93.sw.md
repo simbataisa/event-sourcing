@@ -76,6 +76,7 @@ app_version: 1.3.5
             
     *   `query-service` = `default` or `event-store`
 
+<mark>**_When using remote broker, the remote kafka `advertised.listeners` or `listeners` in `server.properties` should be set to the machine ip address. If not it will use `localhost/127.0.0.1`_**</mark>
 <br/>
 
 <!--MERMAID {width:100}-->
@@ -88,43 +89,6 @@ C -->|Two| E[iPhone]
 C -->|Three| F[fa:fa-car Car]
 ```
 <!--MCONTENT {content: "graph TD<br/>\nA\\[Christmas\\] \\-\\-\\>|Get money| B(Go shopping)<br/>\nB \\-\\-\\> C{Let me think}<br/>\nC \\-\\-\\>|One| D\\[Laptop\\]<br/>\nC \\-\\-\\>|Two| E\\[iPhone\\]<br/>\nC \\-\\-\\>|Three| F\\[fa:fa-car Car\\]"} --->
-
-<br/>
-
-```plantuml
-@startuml
-
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
-
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
-
-cloud {
-  [Example 1]
-}
-
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
-
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
-```
 
 <br/>
 
