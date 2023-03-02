@@ -2,7 +2,7 @@
 id: x208s
 title: README
 file_version: 1.1.2
-app_version: 1.3.5
+app_version: 1.3.6
 ---
 
 # Event Sourcing Demo
@@ -79,27 +79,38 @@ app_version: 1.3.5
 
 _When using a remote broker, the remote_ `kafka` `advertised.listeners` _or_ `listeners` _in_ `server.properties` _should be set to the machine's IP address. If not it will use_ `localhost/127.0.0.1`
 
-## Diagram Tool
+## How to test
 
-### ascii diagram
+### Postman Collection
 
-*   `ditaa`
+Import the API collection from this<br/>
+`📄 docs/resources/CQRS_Event_Sourcing.postman_collection.json`
+
+<br/>
+
+<div align="center"><img src="https://firebasestorage.googleapis.com/v0/b/swimmio-content/o/repositories%2FZ2l0aHViJTNBJTNBZXZlbnQtc291cmNpbmclM0ElM0FzaW1iYXRhaXNh%2F8e53ea2f-0763-442c-a800-f33ba07c7087.png?alt=media&token=9c91b1fa-23fc-4fc5-b7d9-7c4ca6c6ab88" style="width:'50%'"/></div>
+
+<br/>
+
+<br/>
+
+### Using `curl` command
+
+1.  Create `Board`<swm-token data-swm-token=":core-api/src/main/java/com/example/eventstore/model/Board.java:32:4:4:`public class Board {`"/> \`getAllBa
     
+    ```bash
+    curl --location --request POST 'http://localhost:9080/my-event-store-command/boards/' 
+    --header 'Cookie: JSESSIONID=C3FD1BBEE36328C536EF9ED0B7CB5BC8'
     ```
-    +--------+   +-------+    +-------+
-    |        | --+ ditaa +--> |       |
-    |  Text  |   +-------+    |diagram|
-    |Document|   |!magic!|    |       |
-    |     {d}|   |       |    |       |
-    +---+----+   +-------+    +-------+
-    :                         ^
-    |       Lots of work      |
-    +-------------------------+
-    ```
     
-*   [https://asciiflow.com](https://asciiflow.com)
+2.  Get `Board`<swm-token data-swm-token=":core-api/src/main/java/com/example/eventstore/model/Board.java:32:4:4:`public class Board {`"/>
     
-*   [https://textik.com/](https://textik.com/)
+
+Diagram Tool
+
+### MermaidJs
+
+[https://mermaid.js.org](https://mermaid.js.org)
 
 <br/>
 
@@ -113,6 +124,43 @@ C -->|Two| E[iPhone]
 C -->|Three| F[fa:fa-car Car]
 ```
 <!--MCONTENT {content: "graph TD<br/>\nA\\[Christmas\\] \\-\\-\\>|Get money| B(Go shopping)<br/>\nB \\-\\-\\> C{Let me think}<br/>\nC \\-\\-\\>|One| D\\[Laptop\\]<br/>\nC \\-\\-\\>|Two| E\\[iPhone\\]<br/>\nC \\-\\-\\>|Three| F\\[fa:fa-car Car\\]<br/>"} --->
+
+<br/>
+
+### ascii diagram
+
+`ditaa`
+
+```
+    @startditaa
+    +---------+  /--------\   +-------+
+    | cBLU    +--+cAAA    +---+Version|
+    |         |  |  Data  |   |   V3  |
+    |    +----+  |  Base  |   |cRED{d}|
+    |    |cPNK|  |     {s}|   +-------+
+    |    |    |  \---+----/
+    +----+----+    
+    @endditaa
+```
+
+*   [https://asciiflow.com](https://asciiflow.com)
+    
+*   [https://textik.com/](https://textik.com/)
+    
+
+### PlantUML
+
+[https://plantuml.com](https://plantuml.com)
+
+### Mingrammer
+
+Diagrams lets you draw the cloud system architecture in Python code. [https://diagrams.mingrammer.com](https://diagrams.mingrammer.com)
+
+### dbdiagram
+
+SQL Database as code [https://dbdiagram.io/home](https://dbdiagram.io/home)
+
+<br/>
 
 <br/>
 
