@@ -27,7 +27,7 @@ import java.util.concurrent.CancellationException;
 @Slf4j
 @ExtendWith(SpringExtension.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
-class RSocketQueryControllerTest {
+class RSocketBoardQueryControllerTest {
 
   private static RSocketRequester rSocketRequester;
 

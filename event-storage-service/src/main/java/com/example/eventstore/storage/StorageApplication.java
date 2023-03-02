@@ -8,12 +8,14 @@ import org.springframework.boot.autoconfigure.data.mongo.MongoDataAutoConfigurat
 import org.springframework.cloud.client.discovery.EnableDiscoveryClient;
 import org.springframework.cloud.netflix.eureka.EnableEurekaClient;
 import org.springframework.cloud.openfeign.EnableFeignClients;
+import org.springframework.scheduling.annotation.EnableAsync;
 
 @SpringBootApplication
 @EnableEurekaClient
 @EnableDiscoveryClient
 @EnableFeignClients("com.example.eventstore")
 @EnableAutoConfiguration( exclude = {MongoDataAutoConfiguration.class, RabbitAutoConfiguration.class } )
+@EnableAsync
 public class StorageApplication {
 
 	public static void main(String[] args) {

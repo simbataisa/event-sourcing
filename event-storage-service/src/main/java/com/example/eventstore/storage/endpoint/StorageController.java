@@ -4,6 +4,7 @@ package com.example.eventstore.storage.endpoint;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.event.DomainEvents;
 import com.example.eventstore.storage.service.DomainEventService;
+import com.example.eventstore.storage.service.EventSubscriptionManagementService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.ResponseEntity;
@@ -24,6 +25,7 @@ import java.util.UUID;
 public class StorageController {
 
   private final DomainEventService service;
+  private final EventSubscriptionManagementService eventSubscriptionManagementService;
 
   @PostMapping("/")
   public ResponseEntity saveEvent(@RequestBody DomainEvent domainEvent) {
@@ -41,6 +43,17 @@ public class StorageController {
   public ResponseEntity<List<DomainEvents>> domainAllEvents() {
     log.info("Get all events");
     return ResponseEntity.ok(this.service.getAllDomainEvents());
+  }
+
+  /**
+   * Clients who subscribes for events, will receive notification through HTTP request.
+   * @return
+   */
+  @PostMapping("/events/subscribe/{client}")
+  public ResponseEntity<String> subscribe(@PathVariable("client") String client) {
+    log.info("Get all events");
+    eventSubscriptionManagementService.subscribe(client);
+    return ResponseEntity.ok("Client " + client + " subscribed for all events.");
   }
 
 }

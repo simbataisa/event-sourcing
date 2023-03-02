@@ -23,7 +23,7 @@ import java.util.Scanner;
 @Disabled
 @ExtendWith(SpringExtension.class)
 @TestPropertySource(properties = {"spring.profiles.active=event-store"})
-class WebSocketQueryControllerTest {
+class WebSocketBoardQueryControllerTest {
 
   private static final String WS_TOPIC = "/topic/board-events";
 
@@ -72,7 +72,7 @@ class WebSocketQueryControllerTest {
      * @return instance of <code>Message</code>
      */
     private String getSampleMessage() {
-      return "hello from WebSocketQueryControllerTest";
+      return "hello from WebSocketBoardQueryControllerTest";
     }
   }
 

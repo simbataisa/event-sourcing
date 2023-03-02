@@ -15,4 +15,5 @@ public class EventStorageCommonConfig {
     om.disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
     return om;
   }
+
 }

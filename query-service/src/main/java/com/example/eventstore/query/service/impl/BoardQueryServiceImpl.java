@@ -38,7 +38,6 @@ public class BoardQueryServiceImpl implements BoardQueryService<Board, DomainEve
     return this.client.getEvents(boardUuid);
   }
 
-  @CacheEvict(value = "boards", key = "#boardUuid")
   public void uncacheTarget(final UUID boardUuid) {
     this.client.removeFromCache(boardUuid);
   }

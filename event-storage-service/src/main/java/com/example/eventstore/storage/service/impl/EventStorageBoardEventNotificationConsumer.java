@@ -21,7 +21,7 @@ import static com.example.eventstore.Constants.NOTIFICATION_TOPIC;
 import static org.apache.camel.builder.endpoint.StaticEndpointBuilders.kafka;
 
 @Slf4j
-@Profile({"default", "camel-kafka", "h2", "rocksdb"})
+@Profile({"camel-kafka-h2", "camel-kafka-rocksdb"})
 @Service
 public class EventStorageBoardEventNotificationConsumer extends RouteBuilder implements Processor {
 

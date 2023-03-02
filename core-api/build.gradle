@@ -1,9 +1,11 @@
 apply plugin: "java"
-apply plugin: "com.google.protobuf"
+//apply plugin: "com.google.protobuf"
 apply from: "${rootDir}/gradle/spring-boot.gradle"
 apply from: "${rootDir}/gradle/lombok.gradle"
 
 dependencies {
+
+    implementation "org.springframework:spring-context-support:5.3.13"
 
     // GRPC
     implementation "com.google.protobuf:protobuf-java:${protoBufCoreVersion}"
@@ -50,7 +52,7 @@ sourceSets {
     }
 }
 
-protobuf {
+/*protobuf {
     protoc {
         artifact = "com.google.protobuf:protoc:${protoBufCoreVersion}"
     }
@@ -71,7 +73,7 @@ protobuf {
             task.descriptorSetOptions.includeSourceInfo = true
         }
     }
-}
+}*/
 
 bootJar.enabled = false
 jar.enabled = true

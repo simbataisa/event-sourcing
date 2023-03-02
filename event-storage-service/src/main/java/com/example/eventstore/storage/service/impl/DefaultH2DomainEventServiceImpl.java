@@ -13,6 +13,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,14 +26,23 @@ import java.util.List;
 import java.util.UUID;
 
 @Slf4j
-@RequiredArgsConstructor
 @Profile({"default", "h2"})
 @Transactional(readOnly = true)
 @Service
-public class DefaultH2DomainEventServiceImpl implements DomainEventService {
+public class DefaultH2DomainEventServiceImpl extends AbstractDomainEventService {
 
   private final DomainEventsRepository domainEventsRepository;
   private final ObjectMapper objectMapper;
+
+  public DefaultH2DomainEventServiceImpl(
+      ApplicationEventPublisher applicationEventPublisher,
+      DomainEventsRepository domainEventsRepository,
+      ObjectMapper objectMapper
+  ) {
+    super(applicationEventPublisher);
+    this.domainEventsRepository = domainEventsRepository;
+    this.objectMapper = objectMapper;
+  }
 
   public DomainEvents getDomainEvents(final String boardUuid) {
     log.info("processDomainEvent : enter");
@@ -48,16 +58,13 @@ public class DefaultH2DomainEventServiceImpl implements DomainEventService {
     return domainEventsList;
   }
 
-  @Transactional
-  public void processDomainEvent(final DomainEvent event) {
-    log.info("processDomainEvent : enter");
-    log.info("processDomainEvent : event[{}] ", event);
+  @Override
+  protected void handleDomainEvent(DomainEvent event) {
     if (event instanceof BoardInitialized) {
       processBoardInitialized(event);
     } else {
       processBoardEvent(event);
     }
-    log.info("processDomainEvent : exit");
   }
 
   private void processBoardInitialized(final DomainEvent event) {

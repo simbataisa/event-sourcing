@@ -10,6 +10,7 @@ import org.apache.camel.Exchange;
 import org.apache.camel.Processor;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.kafka.support.serializer.JsonSerde;
 import org.springframework.kafka.support.serializer.JsonSerializer;
@@ -21,6 +22,7 @@ import static com.example.eventstore.Constants.NOTIFICATION_TOPIC;
 import static org.apache.camel.builder.endpoint.StaticEndpointBuilders.kafka;
 
 @Slf4j
+@Profile(value = {"default", "camel-kafka"})
 @Service
 public class BoardEventNotificationConsumer extends RouteBuilder implements Processor {
 

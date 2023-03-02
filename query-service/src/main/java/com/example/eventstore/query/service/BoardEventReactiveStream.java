@@ -5,6 +5,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.camel.builder.RouteBuilder;
 import org.apache.camel.component.reactive.streams.api.CamelReactiveStreamsService;
 import org.apache.kafka.common.serialization.StringSerializer;
+import org.springframework.context.annotation.Profile;
 import org.springframework.core.env.Environment;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.support.GenericMessage;
@@ -21,6 +22,7 @@ import static org.apache.camel.builder.endpoint.StaticEndpointBuilders.kafka;
 import static org.apache.camel.builder.endpoint.StaticEndpointBuilders.reactiveStreams;
 
 @Slf4j
+@Profile(value = {"default", "camel-kafka"})
 @Service
 public class BoardEventReactiveStream extends RouteBuilder {
   public static final String ROUTE_ID = "board-events-reactive-stream-route";

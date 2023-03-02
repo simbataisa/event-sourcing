@@ -7,6 +7,9 @@ import com.example.eventstore.event.StoryAdded;
 import com.example.eventstore.event.StoryDeleted;
 import com.example.eventstore.event.StoryUpdated;
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.ImmutableMap;
 import io.vavr.API;
@@ -19,6 +22,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 import static io.vavr.API.$;
@@ -139,5 +143,14 @@ public class Board {
             Case($(instanceOf(StoryDeleted.class)), this::storyDeleted),
             Case($(), this)
         );
+  }
+
+  public static void main(String[] args) throws JsonProcessingException {
+    Board board = new Board(UUID.randomUUID());
+    ObjectMapper objectMapper = new ObjectMapper();
+    objectMapper.registerModule(new JavaTimeModule());
+    var event = board.getChanges().get(0);
+    System.out.println(event);
+    System.out.println(objectMapper.writeValueAsString(event));
   }
 }

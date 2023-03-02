@@ -31,6 +31,7 @@ public class EventStoreBoardQueryClient implements BoardClient<Board, DomainEven
     this.eventStoreQueryFeignClient = eventStoreQueryFeignClient;
   }
 
+  @Cacheable(value = "boards", key = "#boardUuid")
   public Board find(final UUID boardUuid) {
 
     log.info("find : enter");
@@ -55,10 +56,8 @@ public class EventStoreBoardQueryClient implements BoardClient<Board, DomainEven
   @Override
   @CacheEvict(value = "boards", key = "#boardUuid")
   public void removeFromCache(final UUID boardUuid) {
-
-    log.info("removeFromCache : enter");
-    // this method is intentionally left blank
-    log.info("removeFromCache : exit");
+    // This method is intentionally left blank. By invoking this method, we evict the cache of specific key
+    log.info("evict cache name: boards, key: {}", boardUuid);
   }
 
 
@@ -67,7 +66,6 @@ public class EventStoreBoardQueryClient implements BoardClient<Board, DomainEven
   public interface EventStoreQueryFeignClient {
 
     @GetMapping(path = EVENT_STORE_SERVICE_BASE_PATH + "/{boardUuid}")
-    @Cacheable(value = "boards", key = "#boardUuid")
     DomainEvents getDomainEventsForBoardUuid(@PathVariable("boardUuid") UUID boardUuid);
   }
 
