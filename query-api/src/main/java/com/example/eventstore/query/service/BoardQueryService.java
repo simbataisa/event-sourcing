@@ -1,13 +1,14 @@
 package com.example.eventstore.query.service;
 
-import com.example.eventstore.model.Board;
-
+import java.util.List;
 import java.util.UUID;
 
-public interface BoardService {
+public interface BoardQueryService<T, E> {
 
   //    @Cacheable( "boards" )
-  Board find(final UUID boardUuid);
+  T find(final UUID boardUuid);
+
+  List<E> getBoardEvents(final UUID boardUuid);
 
   void uncacheTarget(final UUID boardUuid);
 }

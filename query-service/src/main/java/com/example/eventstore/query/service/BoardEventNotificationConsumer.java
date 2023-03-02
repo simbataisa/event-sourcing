@@ -29,14 +29,14 @@ public class BoardEventNotificationConsumer extends RouteBuilder implements Proc
 
   private final JsonSerde<DomainEvent> domainEventSerde;
   private final ObjectMapper objectMapper;
-  private final BoardService boardService;
+  private final BoardQueryService boardService;
 
   private final String bootstrapServers;
 
   public BoardEventNotificationConsumer(
       JsonSerde<DomainEvent> domainEventSerde,
       ObjectMapper objectMapper,
-      BoardService boardService,
+      BoardQueryService boardService,
       Environment environment
   ) {
     this.domainEventSerde = domainEventSerde;

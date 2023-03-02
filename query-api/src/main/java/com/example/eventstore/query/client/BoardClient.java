@@ -2,11 +2,14 @@ package com.example.eventstore.query.client;
 
 import com.example.eventstore.model.Board;
 
+import java.util.List;
 import java.util.UUID;
 
-public interface BoardClient {
+public interface BoardClient<T, E> {
 
-    Board find(final UUID boardUuid);
+    T find(final UUID boardUuid);
+
+    List<E> getEvents(final UUID boardUuid);
 
     void removeFromCache(final UUID boardUuid);
 

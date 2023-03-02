@@ -42,19 +42,6 @@ public class CommandsController {
         .build();
   }
 
-  @GetMapping("/boards/{boardUuid}")
-  public ResponseEntity<Board> getBoard(@PathVariable("boardUuid") UUID boardUuid) {
-    log.debug("getBoard : enter");
-    log.info("boardUuid {}", boardUuid);
-    final Board board = this.service.getBoard(boardUuid);
-    return ResponseEntity.of(Optional.of(board));
-  }
-
-  @GetMapping("/boards/{boardUuid}/events")
-  public ResponseEntity<List<DomainEvent>> getEvents(@PathVariable("boardUuid") UUID boardUuid) {
-    return ResponseEntity.of(Optional.of(this.service.getBoardEvents(boardUuid)));
-  }
-
   @PatchMapping("/boards/{boardUuid}")
   public ResponseEntity renameBoard(
       @PathVariable("boardUuid") UUID boardUuid,

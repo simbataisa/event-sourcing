@@ -20,21 +20,21 @@ import java.util.UUID;
 @Slf4j
 @Profile("event-store")
 @Component
-public class EventStoreBoardClient implements BoardClient<Board, DomainEvent> {
+public class EventStoreBoardQueryClient implements BoardClient<Board, DomainEvent> {
 
   private static final String API_GW_SERVICE_NAME = "my-api-gateway";
   private static final String EVENT_STORE_SERVICE_BASE_PATH = "/my-event-store/boards";
 
-  private final EventStoreFeignClient eventStoreFeignClient;
+  private final EventStoreQueryFeignClient eventStoreQueryFeignClient;
 
-  public EventStoreBoardClient(EventStoreFeignClient eventStoreFeignClient) {
-    this.eventStoreFeignClient = eventStoreFeignClient;
+  public EventStoreBoardQueryClient(EventStoreQueryFeignClient eventStoreQueryFeignClient) {
+    this.eventStoreQueryFeignClient = eventStoreQueryFeignClient;
   }
 
   public Board find(final UUID boardUuid) {
 
     log.info("find : enter");
-    final DomainEvents domainEvents = this.eventStoreFeignClient.getDomainEventsForBoardUuid(boardUuid);
+    final DomainEvents domainEvents = this.eventStoreQueryFeignClient.getDomainEventsForBoardUuid(boardUuid);
     log.info(domainEvents.toString());
     if (null == domainEvents.getDomainEvents() || domainEvents
         .getDomainEvents()
@@ -48,7 +48,7 @@ public class EventStoreBoardClient implements BoardClient<Board, DomainEvent> {
 
   @Override
   public List<DomainEvent> getEvents(UUID boardUuid) {
-    DomainEvents domainEvents = this.eventStoreFeignClient.getDomainEventsForBoardUuid(boardUuid);
+    DomainEvents domainEvents = this.eventStoreQueryFeignClient.getDomainEventsForBoardUuid(boardUuid);
     return domainEvents.getDomainEvents();
   }
 
@@ -62,17 +62,17 @@ public class EventStoreBoardClient implements BoardClient<Board, DomainEvent> {
   }
 
 
-  @FeignClient(value = API_GW_SERVICE_NAME, fallback = FallbackEventStoreFeignClient.class)
+  @FeignClient(value = API_GW_SERVICE_NAME, fallback = FallbackEventStoreQueryFeignClient.class)
   @LoadBalancerClient(name = "my-event-store")
-  public interface EventStoreFeignClient {
+  public interface EventStoreQueryFeignClient {
 
     @GetMapping(path = EVENT_STORE_SERVICE_BASE_PATH + "/{boardUuid}")
-    @Cacheable("boards")
-    DomainEvents getDomainEventsForBoardUuid(@PathVariable("boardUuid") UUID boardId);
+    @Cacheable(value = "boards", key = "#boardUuid")
+    DomainEvents getDomainEventsForBoardUuid(@PathVariable("boardUuid") UUID boardUuid);
   }
 
   @Component
-  static class FallbackEventStoreFeignClient implements EventStoreFeignClient {
+  static class FallbackEventStoreQueryFeignClient implements EventStoreQueryFeignClient {
     @Override
     public DomainEvents getDomainEventsForBoardUuid(final UUID boardUuid) {
       return new DomainEvents();

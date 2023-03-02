@@ -29,7 +29,7 @@ import java.util.UUID;
 @Profile({"default", "h2"})
 @Transactional(readOnly = true)
 @Service
-public class DomainEventServiceImpl implements DomainEventService {
+public class DefaultH2DomainEventServiceImpl implements DomainEventService {
 
   private final DomainEventsRepository domainEventsRepository;
   private final ObjectMapper objectMapper;

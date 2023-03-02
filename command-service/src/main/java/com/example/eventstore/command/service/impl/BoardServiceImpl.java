@@ -28,17 +28,7 @@ public class BoardServiceImpl implements BoardService<Board, DomainEvent> {
 
     return board.getBoardUuid();
   }
-
-  public Board getBoard(final UUID boardUuid) {
-    log.debug("getBoard : enter");
-    return this.client.find(boardUuid);
-  }
-
-  @Override
-  public List<DomainEvent> getBoardEvents(UUID boardUuid) {
-    return this.client.getEvents(boardUuid);
-  }
-
+  
   public Board renameBoard(final UUID boardUuid, final String name) {
     log.debug("renameBoard : enter");
 

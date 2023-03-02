@@ -10,6 +10,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.rocksdb.Options;
 import org.rocksdb.RocksDB;
 import org.rocksdb.RocksDBException;
+import org.springframework.context.annotation.Profile;
 import org.springframework.stereotype.Repository;
 
 import java.io.File;
@@ -18,6 +19,7 @@ import java.nio.file.Files;
 import java.util.Optional;
 
 @Slf4j
+@Profile("rocksdb")
 @Repository
 public class DomainEventRocksDBRepository implements KVRepository<String, DomainEventsEntity> {
 

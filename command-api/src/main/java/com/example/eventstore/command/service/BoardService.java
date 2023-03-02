@@ -7,10 +7,6 @@ public interface BoardService<T, E> {
 
   UUID createBoard();
 
-  T getBoard(final UUID boardUuid);
-
-  List<E> getBoardEvents(final UUID boardUuid);
-
   T renameBoard(final UUID boardUuid, final String name);
 
   UUID addStory(final UUID boardUuid, final String name);

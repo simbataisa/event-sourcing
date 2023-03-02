@@ -4,7 +4,7 @@ package com.example.eventstore.query.endpoint;
 import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.model.Board;
 import com.example.eventstore.query.service.BoardEventReactiveStream;
-import com.example.eventstore.query.service.BoardService;
+import com.example.eventstore.query.service.BoardQueryService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
@@ -42,7 +42,7 @@ public class RSocketQueryController {
     });
   }
 
-  private final BoardService service;
+  private final BoardQueryService<Board, DomainEvent> service;
   private final ObjectMapper objectMapper;
   private final CamelReactiveStreamsService camelReactiveStreamsService;
 
