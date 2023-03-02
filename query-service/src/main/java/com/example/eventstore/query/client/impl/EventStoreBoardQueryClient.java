@@ -1,5 +1,6 @@
 package com.example.eventstore.query.client.impl;
 
+import com.example.eventstore.event.DomainEvent;
 import com.example.eventstore.event.DomainEvents;
 import com.example.eventstore.model.Board;
 import com.example.eventstore.query.client.BoardClient;
@@ -13,12 +14,13 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
+import java.util.List;
 import java.util.UUID;
 
 @Slf4j
 @Profile("event-store")
 @Component
-public class EventStoreBoardClient implements BoardClient {
+public class EventStoreBoardClient implements BoardClient<Board, DomainEvent> {
 
   private static final String API_GW_SERVICE_NAME = "my-api-gateway";
   private static final String EVENT_STORE_SERVICE_BASE_PATH = "/my-event-store/boards";
@@ -42,6 +44,12 @@ public class EventStoreBoardClient implements BoardClient {
     Board board = Board.createFrom(boardUuid, domainEvents.getDomainEvents());
     log.info("find : exit");
     return board;
+  }
+
+  @Override
+  public List<DomainEvent> getEvents(UUID boardUuid) {
+    DomainEvents domainEvents = this.eventStoreFeignClient.getDomainEventsForBoardUuid(boardUuid);
+    return domainEvents.getDomainEvents();
   }
 
   @Override
