@@ -46,6 +46,7 @@ public class BoardQueryController {
       @PathVariable("boardUuid")
       UUID boardUuid
   ) {
+    log.info("Getting all events for board with id {}", boardUuid);
     return ResponseEntity.of(Optional.of(this.service.getBoardEvents(boardUuid)));
   }
 

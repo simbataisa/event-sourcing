@@ -4,6 +4,9 @@ import com.example.eventstore.event.DomainEvent;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.apache.kafka.common.header.internals.RecordHeader;
 import org.apache.kafka.common.header.internals.RecordHeaders;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.EnableCaching;
+import org.springframework.cache.concurrent.ConcurrentMapCacheManager;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.kafka.support.converter.DefaultJackson2JavaTypeMapper;
@@ -17,9 +20,12 @@ import static org.springframework.kafka.support.converter.AbstractJavaTypeMapper
 import static org.springframework.kafka.support.converter.Jackson2JavaTypeMapper.TypePrecedence.TYPE_ID;
 
 @Configuration
+@EnableCaching
 public class CommonConfig {
 
   public static final RecordHeaders DOMAIN_EVENT_SERDE_RECORD_HEADERS = new RecordHeaders();
+  public static final String BOARD_CACHE_NAME = "boards";
+  public static final String BOARD_EVENTS_CACHE_NAME = "events";
 
   static {
     DOMAIN_EVENT_SERDE_RECORD_HEADERS.add(new RecordHeader(
@@ -46,5 +52,10 @@ public class CommonConfig {
     domainEventJsonSerializer.setTypeMapper(typeMapper);
 
     return new JsonSerde<>(domainEventJsonSerializer, domainEventJsonDeserializer);
+  }
+
+  @Bean
+  public CacheManager cacheManager() {
+    return new ConcurrentMapCacheManager(BOARD_CACHE_NAME, BOARD_EVENTS_CACHE_NAME);
   }
 }

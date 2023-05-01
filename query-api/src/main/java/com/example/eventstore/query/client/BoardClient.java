@@ -11,6 +11,4 @@ public interface BoardClient<T, E> {
 
     List<E> getEvents(final UUID boardUuid);
 
-    void removeFromCache(final UUID boardUuid);
-
 }

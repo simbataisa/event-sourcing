@@ -12,12 +12,13 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @SpringBootApplication
 @EnableDiscoveryClient
 @EnableFeignClients
-@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class, DataSourceTransactionManagerAutoConfiguration.class,
-    HibernateJpaAutoConfiguration.class})
+@EnableAutoConfiguration(exclude = {DataSourceAutoConfiguration.class,
+                                    DataSourceTransactionManagerAutoConfiguration.class,
+                                    HibernateJpaAutoConfiguration.class})
 public class EventStoreQueryApplication {
 
-	public static void main(String[] args) {
-		SpringApplication.run(EventStoreQueryApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(EventStoreQueryApplication.class, args);
+  }
 
 }

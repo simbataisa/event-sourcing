@@ -14,6 +14,9 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.UUID;
 
+import static com.example.eventstore.query.config.CommonConfig.BOARD_CACHE_NAME;
+import static com.example.eventstore.query.config.CommonConfig.BOARD_EVENTS_CACHE_NAME;
+
 @Slf4j
 @RequiredArgsConstructor
 @Profile(value = {"default", "event-store"})
@@ -22,9 +25,7 @@ public class BoardQueryServiceImpl implements BoardQueryService<Board, DomainEve
 
   private final BoardClient<Board, DomainEvent> client;
 
-  // This is cached at OpenFeign Client instead.
-  // This can be enabled to avoid reconstructing state of object from cached events.
-  //@Cacheable(value = "boards", key = "#boardUuid")
+  @Cacheable(value = BOARD_CACHE_NAME)
   public Board find(final UUID boardUuid) {
     log.info("find : enter");
     Board board = this.client.find(boardUuid);
@@ -33,12 +34,15 @@ public class BoardQueryServiceImpl implements BoardQueryService<Board, DomainEve
     return board;
   }
 
+  @Cacheable(value = BOARD_EVENTS_CACHE_NAME)
   @Override
   public List<DomainEvent> getBoardEvents(UUID boardUuid) {
     return this.client.getEvents(boardUuid);
   }
 
+  @CacheEvict(value = {BOARD_CACHE_NAME, BOARD_EVENTS_CACHE_NAME})
+  @Override
   public void uncacheTarget(final UUID boardUuid) {
-    this.client.removeFromCache(boardUuid);
+    log.info("uncacheTarget {}", boardUuid);
   }
 }
