@@ -51,7 +51,7 @@ public class BoardQueryController {
   }
 
   @PostMapping("/cache/{boardUuid}")
-  public ResponseEntity evictCache(
+  public ResponseEntity<Void> evictCache(
       @PathVariable("boardUuid")
       UUID boardUuid,
       @RequestBody
