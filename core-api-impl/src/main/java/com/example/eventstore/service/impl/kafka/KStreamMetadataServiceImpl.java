@@ -14,7 +14,6 @@ import org.apache.kafka.streams.state.HostInfo;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -51,7 +50,7 @@ public class KStreamMetadataServiceImpl implements KStreamMetadataService {
     return new HostStoreInfo(
         metadata.activeHost().host(),
         metadata.activeHost().port(),
-        metadata.standbyHosts().stream().map(HostInfo::host).collect(Collectors.toList())
+        metadata.standbyHosts().stream().map(HostInfo::host).toList()
     );
   }
 
@@ -61,7 +60,6 @@ public class KStreamMetadataServiceImpl implements KStreamMetadataService {
                                                 metadata.host(),
                                                 metadata.port(),
                                                 new ArrayList<>(metadata.stateStoreNames())
-                                            ))
-                          .collect(Collectors.toList());
+                                            )).toList();
   }
 }
