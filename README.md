@@ -182,41 +182,44 @@ https://docs.asciidoctor.org/diagram-extension/latest/
 ```
 
 ### `Plant UML`
-
-```plantuml
-@startuml
-
-package "Some Group" {
-  HTTP - [First Component]
-  [Another Component]
-}
-
-node "Other Groups" {
-  FTP - [Second Component]
-  [First Component] --> FTP
-}
-
-cloud {
-  [Example 1]
-}
-
-
-database "MySql" {
-  folder "This is my folder" {
-    [Folder 3]
-  }
-  frame "Foo" {
-    [Frame 4]
-  }
-}
-
-
-[Another Component] --> [Example 1]
-[Example 1] --> [Folder 3]
-[Folder 3] --> [Frame 4]
-
-@enduml
-```
+* You may encounter issue that `/opt/local/bin/dot` not found.
+* Follow installation at [this link](https://plantuml.com/en/graphviz-dot)
+* Create symbolic link
+    ```shell
+    sudo ln -s /opt/homebrew/Cellar/graphviz/8.0.5/bin/dot /opt/local/bin/dot
+    ```
+    ```plantuml
+    @startuml
+    package "Some Group" {
+      HTTP - [First Component]
+      [Another Component]
+    }
+    
+    node "Other Groups" {
+      FTP - [Second Component]
+      [First Component] --> FTP
+    }
+    
+    cloud {
+      [Example 1]
+    }
+    
+    
+    database "MySql" {
+      folder "This is my folder" {
+        [Folder 3]
+      }
+      frame "Foo" {
+        [Frame 4]
+      }
+    }
+    
+    
+    [Another Component] --> [Example 1]
+    [Example 1] --> [Folder 3]
+    [Folder 3] --> [Frame 4]
+    @enduml
+    ```
 
 ### `Mermaid`
 
@@ -229,5 +232,4 @@ graph TD
     C -->|Three| F[fa:fa-car Car]
 ```
 
-
-image:docs/resources/images/asciidoctor-diagram.png[]
+![image](docs/resources/images/asciidoctor-diagram.png)
